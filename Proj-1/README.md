@@ -1,8 +1,7 @@
 BIOS 611 NFL Project 1
 ======================
 
-This repo contains an analysis of NFL combine and draft data from the year 2000\
-on. Data initially taken from kaggle at: https://www.kaggle.com/toddsteussie/nfl-play-statistics-dataset-2004-to-present
+This repo contains an analysis of NFL combine and draft data from the year 2000 on. Data initially taken from kaggle at: https://www.kaggle.com/toddsteussie/nfl-play-statistics-dataset-2004-to-present
 
 
 
