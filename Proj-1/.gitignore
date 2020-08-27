@@ -2,4 +2,3 @@
 .rstudio/*
 derived_data/*.csv
 .config/*
-.bash_history/*
