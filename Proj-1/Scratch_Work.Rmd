@@ -7,5 +7,39 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r}
+combine <- read.csv("source_data/combine.csv")
+draft <- read.csv("source_data/draft.csv")
+```
+
+```{r}
+head(combine)
+str(combine)
+summary(combine)
+```
+
+```{r}
+head(draft)
+str(draft)
+summary(draft)
+```
+
+
+Initial cleaning
+```{r}
+#I'm thinking i'm going to use only data from 2000 on. I think these observations will be more complete. Also since the game has changed so much, this sort of analysis is only really relevant in the modern era of football. I also do not need a lot of these variables, lets select important ones 
+Comb.2000 <- combine %>% 
+  filter(combineYear >= 2000) %>% 
+  select(1:6, 8:18, 28:33)
+Draft.2000 <- draft %>% 
+  filter(draft >= 2000) %>% 
+  select(1:19)
+  
+#ok lets take out any rows with an NA just to see
+Comb.compl <- na.omit(Comb.2000) 
+Draft.compl <- na.omit(Draft.2000)
 ```
 
