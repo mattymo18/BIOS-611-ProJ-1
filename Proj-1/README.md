@@ -13,6 +13,7 @@ PROPOSAL
 #### Datasets:
 
   The datasets used are combine.csv and draft.csv taken from Kaggle at: https://www.kaggle.com/toddsteussie/nfl-play-statistics-dataset-2004-to-present 
+  
   The datasets are joined and filtered to only include complete observations from the year 2000 on.
   
 #### Preliminary Figures:
