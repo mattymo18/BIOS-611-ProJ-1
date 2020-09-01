@@ -6,7 +6,7 @@ This repo contains an analysis of NFL combine and draft data from the year 2000 
 PROPOSAL
 --------
 
-###INTRODUCTION:
+### INTRODUCTION:
   
   The NFL Draft is one of the of the biggest sport drafts in the world. Teams will spend millions of dollars on players that they think will help their team win and reach the Superbowl. With all this money changing hands comes a lot of risk and a lot of questions about what stats are important for deciding what players to draft. The NFL combine allows teams to see how players match up against each other in physical challenges. Teams will use the results of these tests, along with college stats and performance, to decide if and when they should draft a player. 
   
