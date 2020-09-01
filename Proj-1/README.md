@@ -24,9 +24,15 @@ PROPOSAL
 
 USAGE
 -----
-You will neeed Docker and the ability to run Docker as your current user. 
+You'll need Docker and the ability to run Docker as your current user.
 
-This Docker container is based on rocker verse. To connect run
-    > docker run -v `pwd`:/home/rstudio -p 8787:8787 -e PASSWORD=mypass -t project-env
-    
-Then connect to machine on port 8787
+You'll need to build the container:
+
+    > docker build . -t project-env
+
+This Docker container is based on rocker/verse. To run rstudio server:
+
+    > docker run -v `pwd`:/home/rstudio -p 8787:8787\
+      -e PASSWORD=mypass -t project-env
+      
+Then connect to the machine on port 8787.
