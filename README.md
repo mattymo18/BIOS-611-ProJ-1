@@ -29,6 +29,7 @@ The figure above shows the distribution of weights for offensive players in the 
 ![](derived_graphs/Age.Dist.png)
 
 The figure above shows the age distribution of players when they enter the draft categorized by position. Most players seem to be between 22 and 24. It would be interesting to see the effect age has on pick. 
+
 USAGE
 -----
 You'll need Docker and the ability to run Docker as your current user.
