@@ -20,6 +20,7 @@ PROPOSAL
 
 ![](derived_graphs/Off.Def.40s.png)
 
+The figure above shows 40 times against pick taken in the draft for skill position players on offense and defense. There seems to be a slight exponential trend showing that player who ran slower got picked slightly later. Also, WRs and RBs seems to be the fastest in the draft. 
 
 USAGE
 -----
