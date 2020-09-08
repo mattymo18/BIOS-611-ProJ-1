@@ -18,8 +18,7 @@ PROPOSAL
   
 #### Preliminary Figures:
 
-  Figures of each combine stat against overall pick. 
-
+![](derived_graphs/Off.Def.40s.png)
 
 
 USAGE
