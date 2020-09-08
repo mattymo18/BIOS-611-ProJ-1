@@ -51,3 +51,49 @@ g6 <- ggplot(DF.Off.strength, aes(weight)) +
 
 Graph2 <- grid.arrange(g5, g6, nrow=1, top = "Weight Distribution by Position (Offense)")
 ggsave("derived_graphs/Off.Weights.png", plot = Graph2)
+
+
+#graph 3
+
+g7 <- ggplot(DF.Off.skill, aes(ageAtDraft)) +
+  geom_histogram(aes(fill = position), position = "dodge") +
+  xlab("Age at Draft") +
+  ylab("Count") +
+  labs(fill = "Position", title = "Offense Skill") +
+  theme(legend.position = c(0, 1),
+        legend.justification = c(0, 1),
+        legend.key.size = unit(.25, "cm")) +
+  theme(axis.text.y=element_blank())
+
+g8 <- ggplot(DF.Off.strength, aes(ageAtDraft)) +
+  geom_histogram(aes(fill = position), position = "dodge") +
+  xlab("Age at Draft") +
+  ylab("Count") +
+  labs(fill = "Position", title = "Offense Line") +
+  theme(legend.position = c(0, 1),
+        legend.justification = c(0, 1),
+        legend.key.size = unit(.25, "cm")) +
+  theme(axis.text.y=element_blank())
+
+g9 <- ggplot(DF.Def.skill, aes(ageAtDraft)) +
+  geom_histogram(aes(fill = position), position = "dodge") +
+  xlab("Age at Draft") +
+  ylab("Count") +
+  labs(fill = "Position", title = "Defense Skill") +
+  theme(legend.position = c(0, 1),
+        legend.justification = c(0, 1),
+        legend.key.size = unit(.25, "cm")) +
+  theme(axis.text.y=element_blank())
+
+g10 <- ggplot(DF.Def.strength, aes(ageAtDraft)) +
+  geom_histogram(aes(fill = position), position = "dodge") +
+  xlab("Age at Draft") +
+  ylab("Count") +
+  labs(fill = "Position", title = "Defense Line") +
+  theme(legend.position = c(0, 1),
+        legend.justification = c(0, 1),
+        legend.key.size = unit(.25, "cm")) +
+  theme(axis.text.y=element_blank())
+
+Graph3 <- grid.arrange(g7, g8, g9, g10, nrow=2, top = "Age Distribution by Position")
+ggsave("derived_graphs/Age.Dist.png", plot=Graph3)
