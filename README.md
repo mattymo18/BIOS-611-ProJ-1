@@ -22,6 +22,10 @@ PROPOSAL
 
 The figure above shows 40 times against pick taken in the draft for skill position players on offense and defense. There seems to be a slight exponential trend showing that player who ran slower got picked slightly later. Also, WRs and RBs seems to be the fastest in the draft. 
 
+![](derived_graphs/Off.Weights.png)
+
+The figure above shows the distribution of weights for offensive players in the draft. WRs seems to have the smallest average weight, while the offenseive lineman all weight similarily. 
+
 USAGE
 -----
 You'll need Docker and the ability to run Docker as your current user.

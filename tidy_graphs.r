@@ -27,3 +27,27 @@ g3 <- ggplot(DF.Def.skill, mapping = aes(x = combine40yd, y = pick, color = posi
 
 Graph1 <- grid.arrange(g1, g3, nrow=1)
 ggsave("derived_graphs/Off.Def.40s.png", plot = Graph1)
+
+
+#graph 2
+
+g5 <- ggplot(DF.Off.skill, aes(weight)) +
+  geom_density(aes(color=position), alpha=.5) +
+  xlim(170, 400) +
+  xlab("Weights") +
+  ylab("") +
+  labs(color="Position") +
+  theme(legend.position = c(0, 1),
+        legend.justification = c(0, 1))
+
+g6 <- ggplot(DF.Off.strength, aes(weight)) +
+  geom_density(aes(color=position), alpha=.5) +
+  xlim(170,400) +
+  xlab("Weights") +
+  ylab("") +
+  labs(color="Position") +
+  theme(legend.position = c(0, 1),
+        legend.justification = c(0, 1))
+
+Graph2 <- grid.arrange(g5, g6, nrow=1, top = "Weight Distribution by Position (Offense)")
+ggsave("derived_graphs/Off.Weights.png", plot = Graph2)

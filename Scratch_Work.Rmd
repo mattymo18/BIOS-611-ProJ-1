@@ -92,6 +92,9 @@ g4 <- ggplot(DF.Def.strength, mapping = aes(x = combineBench, y = pick, color = 
   xlab("Benchpress") +
   ylab("Pick") +
   labs(color = "Position")
+
+g2
+g4
 ```
 
 ```{r}
@@ -99,6 +102,29 @@ Graph1 <- grid.arrange(g1, g3, nrow=1)
 ggsave("derived_graphs/Off.Def.40s.png", plot = Graph1)
 ```
 
+```{r}
+g5 <- ggplot(DF.Off.skill, aes(weight)) +
+  geom_density(aes(color=position), alpha=.5) +
+  xlim(170, 400) +
+  xlab("Weights") +
+  ylab("") +
+  labs(color="Position") +
+   theme(legend.position = c(0, 1),
+                  legend.justification = c(0, 1))
+#g5
+
+g6 <- ggplot(DF.Off.strength, aes(weight)) +
+  geom_density(aes(color=position), alpha=.5) +
+  xlim(170,400) +
+  xlab("Weights") +
+  ylab("") +
+  labs(color="Position") +
+   theme(legend.position = c(0, 1),
+                  legend.justification = c(0, 1))
+#g6
+
+Graph2 <- grid.arrange(g5, g6, nrow=1, top = "Weight Distribution by Position (Offense)")
+```
 
 
 
