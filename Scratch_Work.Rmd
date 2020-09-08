@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(gridExtra)
 ```
 
 ```{r}
@@ -16,15 +17,15 @@ draft <- read.csv("source_data/draft.csv")
 ```
 
 ```{r}
-head(combine)
-str(combine)
-summary(combine)
+# head(combine)
+# str(combine)
+# summary(combine)
 ```
 
 ```{r}
-head(draft)
-str(draft)
-summary(draft)
+# head(draft)
+# str(draft)
+# summary(draft)
 ```
 
 
@@ -48,10 +49,55 @@ Join and make final single csv
 ```{r}
 #join
 DF.clean <- na.omit(left_join(Comb.compl, Draft.compl, by = "playerId")[, -c(1, 3, 4:9, 11:13, 16)])
-
+DF.clean$position <- factor(DF.clean$position)
 ```
 
+I think I need to split into positions to really see what's up
+```{r}
+#Lets fist split into offense and defense and then split more from there
+DF.Off.skill <- DF.clean %>% 
+  filter(position == "WR" | position == "RB" | position == "TE")
+DF.Off.strength <- DF.clean %>% 
+  filter(position == "C" | position == "OG" | position == "OT" | position == "OL")
+DF.Def.skill <- DF.clean %>% 
+  filter(position == "DB" | position == "S")
+DF.Def.strength <- DF.clean %>% 
+  filter(position == "DE" | position == "DL" | position == "DT" | position == "LB" | position == "OLB")
+```
 
+Graphs
+```{r}
+g1 <- ggplot(DF.Off.skill, mapping = aes(x = combine40yd, y = pick, color = position)) +     geom_point(alpha = .5) +
+  xlab("40 Time") +
+  ylab("Pick") +
+  labs(color = "Position", title = "Offense") +
+  xlim(4, 5.2) +
+  theme(legend.position = c(0, 1),
+                  legend.justification = c(0, 1))
+
+g2 <- ggplot(DF.Off.strength, mapping = aes(x = combineBench, y = pick, color = position)) +     geom_point(alpha = .5) +
+  xlab("Benchpress") +
+  ylab("Pick") +
+  labs(color = "Position")
+
+g3 <- ggplot(DF.Def.skill, mapping = aes(x = combine40yd, y = pick, color = position)) +     geom_point(alpha = .5) +
+  xlab("40 Time") +
+  ylab("Pick") +
+  labs(color = "Position", title = "Defense") +
+  xlim(4, 5.2) +
+  theme(legend.position = c(0, 1),
+                  legend.justification = c(0, 1))
+
+g4 <- ggplot(DF.Def.strength, mapping = aes(x = combineBench, y = pick, color = position)) +     geom_point(alpha = .5) +
+  xlab("Benchpress") +
+  ylab("Pick") +
+  labs(color = "Position")
+```
+
+```{r}
+Graph1 <- grid.arrange(g1, g3, nrow=1)
+ggsave("derived_graphs/Off.Def.40s.png", plot = Graph1)
+```
 
 
 
