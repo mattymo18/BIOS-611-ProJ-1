@@ -19,3 +19,6 @@ Draft.compl <- na.omit(Draft.2000)
 write.csv(Draft.compl, "derived_data/draft.csv")
 write.csv(Combine.compl, "derived_data/combine.csv")
 
+#join data into single clean df
+DF.clean <- na.omit(left_join(Comb.compl, Draft.compl, by = "playerId")[, -c(1, 3, 4:9, 11:13, 16)])
+write.csv(DF.clean, "derived_data/Clean_Data.csv")

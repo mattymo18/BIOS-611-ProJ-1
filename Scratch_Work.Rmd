@@ -40,6 +40,25 @@ Draft.2000 <- draft %>%
   
 #ok lets take out any rows with an NA just to see
 Comb.compl <- na.omit(Comb.2000) 
-Draft.compl <- na.omit(Draft.2000)
+Draft.compl <- na.omit(Draft.2000)[, c(1, 3, 4)]
 ```
+
+Join and make final single csv
+
+```{r}
+#join
+DF.clean <- na.omit(left_join(Comb.compl, Draft.compl, by = "playerId")[, -c(1, 3, 4:9, 11:13, 16)])
+
+```
+
+
+
+
+
+
+
+
+
+
+
 
