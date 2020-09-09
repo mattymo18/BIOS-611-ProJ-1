@@ -6,6 +6,7 @@ DF.Off.skill <- read.csv("derived_data/Off.Skill.csv")
 DF.Off.strength <- read.csv("derived_data/Off.Strength.csv")
 DF.Def.skill <- read.csv("derived_data/Def.Skill.csv")
 DF.Def.strength <- read.csv("derived_data/Def.Strength.csv")
+DF.clean <- read.csv("derived_data/Clean_Data.csv")
 
 #graph 1
 
@@ -97,3 +98,13 @@ g10 <- ggplot(DF.Def.strength, aes(ageAtDraft)) +
 
 Graph3 <- grid.arrange(g7, g8, g9, g10, nrow=2, top = "Age Distribution by Position")
 ggsave("derived_graphs/Age.Dist.png", plot=Graph3)
+
+Graph4 <- DF.clean %>% 
+  filter(position != "QB" & position != "LS") %>% 
+  ggplot(aes(x=position, y=round, color = position)) +     
+  geom_boxplot() +
+  xlab("Position") +
+  ylab("Pick") + 
+  theme(legend.position = "none")
+ggsave("derived_graphs/Boxplot.by.round.png", plot=Graph4)
+
