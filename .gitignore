@@ -2,3 +2,5 @@
 .rstudio/*
 derived_data/*.csv
 Rplots.pdf*
+.config/*
+derived_graphs/*.png
