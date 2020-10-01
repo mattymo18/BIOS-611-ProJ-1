@@ -65,6 +65,15 @@ DF.Def.strength <- DF.clean %>%
   filter(position == "DE" | position == "DL" | position == "DT" | position == "LB" | position == "OLB")
 ```
 
+Quick read in cleaned data 
+--------------------------
+```{r}
+DF.Off.skill <- read.csv("derived_data/Off.Skill.csv")
+DF.Off.strength <- read.csv("derived_data/Off.Strength.csv")
+DF.Def.skill <- read.csv("derived_data/Def.Skill.csv")
+DF.Def.strength <- read.csv("derived_data/Def.Strength.csv")
+```
+
 Graphs
 ```{r}
 g1 <- ggplot(DF.Off.skill, mapping = aes(x = combine40yd, y = pick, color = position)) +     geom_point(alpha = .5) +
@@ -191,9 +200,118 @@ g11
 
 ```
 
+Read in full set
+```{r}
+Clean_Data <- read.csv("derived_data/Clean_Data.csv") %>% 
+  mutate(position = as.numeric(position))
+```
+
+Add a tag of skill or strength for clustering Combine the 4 data sets with the tag
+```{r}
+DF.Off.skill <- read.csv("derived_data/Off.Skill.csv") %>% 
+  mutate(Type = "1") #skill is 1, strength is 2, linebacker is 3
+DF.Off.strength <- read.csv("derived_data/Off.Strength.csv") %>% 
+  mutate(Type = "2")
+DF.Def.skill <- read.csv("derived_data/Def.Skill.csv" )%>% 
+  mutate(Type = "1")
+DF.Def.strength <- read.csv("derived_data/Def.Strength.csv" )%>% 
+  mutate(Type = "2")
+DF.Def.LBs <- read.csv("derived_data/Def.LBs.csv") %>% 
+  mutate(Type = "3")
+Skill.Stren.DF <- rbind(DF.Off.skill, DF.Off.strength, DF.Def.strength, DF.Def.skill, DF.Def.LBs)
+```
+
+Clustering
+------
+
+Initial split of data into test/train/validate
+```{r}
+set.seed <- 18 #this is my lucky number 
+spec = c(train = .6, test = .2, validate = .2)
+DF = sample(cut(
+  seq(nrow(Clean_Data)), 
+  nrow(Clean_Data)*cumsum(c(0,spec)),
+  labels = names(spec)
+))
+
+Split.DF = split(Clean_Data, DF)
+```
+
+TSNE
+```{r}
+set.seed = 18
+library(Rtsne)
+fit1 <- Rtsne(Skill.Stren.DF %>% select(heightInches, weight, 7:12), dims=2, check_duplicates = F)
+ggplot(fit1$Y %>% as.data.frame() %>% as_tibble() %>% mutate(label=Skill.Stren.DF$Type), aes(V1,V2)) +
+    geom_point(aes(color=label))
+```
+Did not exactly trust TSNE becasue it is non-linear so lets try k-means. 
 
 
 
+K-nearest neighbor
+```{r}
+library(class)
+results1 <- do.call(rbind, Map(function(n) {
+  predictions <- knn(train = Split.DF$train,
+                     test = Split.DF$test, 
+                     cl = Split.DF$train$position, 
+                     k=n)
+  acc <- sum(predictions == Split.DF$validate$position)/length(predictions)
+  tibble(k=n, acc=acc)
+}, seq(1, 100))) %>% 
+  arrange(desc(acc), k)
 
+results1 %>% arrange(desc(acc),k) %>% head(5)
+```
+
+K-means
+
+```{r}
+ser.seed = 18
+cc <- kmeans(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3)
+fit1 <- Rtsne(Skill.Stren.DF %>% select(heightInches, weight, 7:12), dims=2, check_duplicates = F)
+ggplot(fit1$Y %>% as.data.frame() %>% as_tibble() %>% mutate(label=cc$cluster),aes(V1,V2)) +
+    geom_point(aes(color=factor(label)))
+```
+
+The groups of athletes, although there is sort of a spectrum. Clustering is happening in unreduced number of dimensions and clusters still show up when we reduce the dimensionality. looks like there really are three groups, lets try to see use Principle Component Analysis
+
+GLM
+```{r}
+glm1 <- glm(pick ~ position + 
+              heightInches + 
+              weight + 
+              ageAtDraft + 
+              combine40yd + 
+              combineVert + 
+              combineBench +
+              combineShuttle +
+              combineBroad +
+              combine3cone, family = poisson, data = Split.DF$train)
+anova(glm1, test = "Chisq")
+step(glm1, direction = "both", trace = 0)
+
+glm2 <- glm(pick ~ position + 
+              heightInches + 
+              ageAtDraft + 
+              combine40yd + 
+              combineVert + 
+              combineBench +
+              combineShuttle +
+              combineBroad +
+              combine3cone, family = poisson, data = Split.DF$train)
+summary(glm2)
+anova(glm2, test = "Chisq")
+```
+
+Lasso and Ridge
+```{r}
+set.seed = 18
+library(glmnet)
+
+
+
+```
 
 
