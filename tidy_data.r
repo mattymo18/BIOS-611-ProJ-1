@@ -26,17 +26,20 @@ write.csv(DF.clean, "derived_data/Clean_Data.csv")
 
 #split data into 4 groups
 DF.Off.skill <- DF.clean %>% 
-  filter(position == "WR" | position == "RB" | position == "TE")
+  filter(position == "WR" | position == "RB")
 DF.Off.strength <- DF.clean %>% 
   filter(position == "C" | position == "OG" | position == "OT" | position == "OL")
 DF.Def.skill <- DF.clean %>% 
   filter(position == "DB" | position == "S")
 DF.Def.strength <- DF.clean %>% 
-  filter(position == "DE" | position == "DL" | position == "DT" | position == "LB" | position == "OLB")
+  filter(position == "DL" | position == "DT" | position == "DE")
+DF.Def.LBs <- DF.clean %>% 
+  filter(position == "LB" | position == "OLB" | position == "TE")
 
 #save new csv's
 write.csv(DF.Off.skill, "derived_data/Off.Skill.csv")
 write.csv(DF.Off.strength, "derived_data/Off.Strength.csv")
 write.csv(DF.Def.skill, "derived_data/Def.Skill.csv")
 write.csv(DF.Def.strength, "derived_data/Def.Strength.csv")
+write.csv(DF.Def.LBs, "derived_data/Def.LBs.csv")
 
