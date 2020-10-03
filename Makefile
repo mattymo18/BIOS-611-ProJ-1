@@ -27,7 +27,8 @@ derived_graphs/Boxplot.by.round.png:\
  tidy_graphs.r
 	Rscript tidy_graphs.r
 	
-
+derived_graphs/PCA.Eigen.png\
+derived_graphs/PCA.FramedClusters.png\
 derived_graphs/K-Means.Cluster.png\
 derived_graphs/TSNE.Cluster.png:\
  derived_data/Def.Skill.csv\
