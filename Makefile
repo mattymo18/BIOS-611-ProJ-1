@@ -26,3 +26,13 @@ derived_graphs/Boxplot.by.round.png:\
  derived_data/Off.Strength.csv\
  tidy_graphs.r
 	Rscript tidy_graphs.r
+	
+
+derived_graphs/K-Means.Cluster.png\
+derived_graphs/TSNE.Cluster.png:\
+ derived_data/Def.Skill.csv\
+ derived_data/Def.Strength.csv\
+ derived_data/Off.Skill.csv\
+ derived_data/Off.Strength.csv\
+ cluster_data.R
+	Rscript cluster_data.R

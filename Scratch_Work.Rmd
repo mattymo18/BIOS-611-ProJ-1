@@ -242,8 +242,9 @@ TSNE
 set.seed = 18
 library(Rtsne)
 fit1 <- Rtsne(Skill.Stren.DF %>% select(heightInches, weight, 7:12), dims=2, check_duplicates = F)
-ggplot(fit1$Y %>% as.data.frame() %>% as_tibble() %>% mutate(label=Skill.Stren.DF$Type), aes(V1,V2)) +
-    geom_point(aes(color=label))
+ggplot(fit1$Y %>% as.data.frame() %>% as_tibble(), aes(V1,V2)) +
+    geom_point(aes(color=Skill.Stren.DF$Type)) +
+    scale_color_discrete(name="Type", labels = c("Skill", "Strength", "Mixed"))
 ```
 Did not exactly trust TSNE becasue it is non-linear so lets try k-means. 
 
@@ -268,11 +269,12 @@ results1 %>% arrange(desc(acc),k) %>% head(5)
 K-means
 
 ```{r}
-ser.seed = 18
+set.seed = 18
 cc <- kmeans(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3)
 fit1 <- Rtsne(Skill.Stren.DF %>% select(heightInches, weight, 7:12), dims=2, check_duplicates = F)
 ggplot(fit1$Y %>% as.data.frame() %>% as_tibble() %>% mutate(label=cc$cluster),aes(V1,V2)) +
-    geom_point(aes(color=factor(label)))
+    geom_point(aes(color=factor(label))) +
+    scale_color_discrete(name="Type", labels = c("Skill", "Strength", "Mixed"))
 ```
 
 The groups of athletes, although there is sort of a spectrum. Clustering is happening in unreduced number of dimensions and clusters still show up when we reduce the dimensionality. looks like there really are three groups, lets try to see use Principle Component Analysis
