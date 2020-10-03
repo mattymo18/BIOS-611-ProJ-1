@@ -38,3 +38,18 @@ g2 <- ggplot(fit1$Y %>% as.data.frame() %>% as_tibble() %>% mutate(label=cc$clus
   scale_color_discrete(name="Type", labels = c("Skill", "Strength", "Mixed"))
 ggsave("derived_graphs/K-Means.Cluster.png", plot = g1)
 
+
+# Principle Component Analysis
+##################
+library(ggfortify)
+library(cluster)
+pcs <- prcomp(Skill.Stren.DF %>% select(heightInches, weight, 7:12), scale. = T)
+g3 <- autoplot(pcs, loadings=T, loadings.colour = 'blue', loadings.label.size = 6)
+g4 <- autoplot(pam(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3), frame = T, fram.type = 'norm') +
+  scale_color_discrete(name="Type", labels = c("Skill", "Strength", "Mixed"))
+g5 <- autoplot(silhouette(pam(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3)))
+
+ggsave("derived_graphs/PCA.Eignen.png", plot = g3)
+ggsave("derived_graphs/PCA.FramedClusters.png", plot = g4)
+ggsave("derived_graphs/PCA.Silhouette.png", plot = g5)
+

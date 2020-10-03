@@ -279,6 +279,33 @@ ggplot(fit1$Y %>% as.data.frame() %>% as_tibble() %>% mutate(label=cc$cluster),a
 
 The groups of athletes, although there is sort of a spectrum. Clustering is happening in unreduced number of dimensions and clusters still show up when we reduce the dimensionality. looks like there really are three groups, lets try to see use Principle Component Analysis
 
+Principle Component anlsysis
+```{r}
+library(ggfortify)
+library(cluster)
+pcs <- prcomp(Skill.Stren.DF %>% select(heightInches, weight, 7:12), scale. = T)
+summary(pcs)
+autoplot(pcs, loadings=T, loadings.colour = 'blue', loadings.label.size = 6) #plots eigenvectors
+# autoplot(kmeans(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3), data = Skill.Stren.DF %>% select(heightInches, weight, 7:12))
+
+autoplot(pam(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3), frame = T, fram.type = 'norm') +
+  scale_color_discrete(name="Type", labels = c("Skill", "Strength", "Mixed"))
+
+autoplot(silhouette(pam(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3)))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 GLM
 ```{r}
 glm1 <- glm(pick ~ position + 
