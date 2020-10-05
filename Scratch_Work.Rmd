@@ -294,22 +294,51 @@ autoplot(pam(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3), frame = 
 autoplot(silhouette(pam(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3)))
 ```
 
+LM
+```{r}
+lm1 <- lm(pick ~ heightInches + 
+              weight + 
+              ageAtDraft + 
+              combine40yd + 
+              combineVert + 
+              combineBench +
+              combineShuttle +
+              combineBroad +
+              combine3cone, data = Split.DF$train)
+summary(lm1)
+lm2 <- step(lm1, trace = 0)
+summary(lm2)
+anova(lm1, lm2)
+plot(lm2)
 
+library(car)
+bc <- boxCox(lm1)
+lam <- bc$x[which.max(bc$y)]
+lm3 <- lm((pick)^lam ~ heightInches + 
+              weight + 
+              ageAtDraft + 
+              combine40yd + 
+              combineVert + 
+              combineBench +
+              combineShuttle +
+              combineBroad +
+              combine3cone, data = Split.DF$train)
+summary(lm3)
 
+lm4 <- step(lm3, trace = 0)
+summary(lm4)
 
+anova(lm3, lm4)
 
-
-
-
-
-
-
-
+predictions.lm4 <- predict(lm4, Split.DF$test[, -c(1, 2, 3, 13, 14)])
+SSE.lm4 <- sum((predictions.lm4 - Split.DF$test$pick)^2)
+RMSE.lm4 <- sqrt(SSE.lm4/nrow(Split.DF$test))
+RMSE.lm4
+```
 
 GLM
 ```{r}
-glm1 <- glm(pick ~ position + 
-              heightInches + 
+glm1 <- glm(pick ~ heightInches + 
               weight + 
               ageAtDraft + 
               combine40yd + 
@@ -321,8 +350,7 @@ glm1 <- glm(pick ~ position +
 anova(glm1, test = "Chisq")
 step(glm1, direction = "both", trace = 0)
 
-glm2 <- glm(pick ~ position + 
-              heightInches + 
+glm2 <- glm(pick ~ heightInches + 
               ageAtDraft + 
               combine40yd + 
               combineVert + 
@@ -332,6 +360,17 @@ glm2 <- glm(pick ~ position +
               combine3cone, family = poisson, data = Split.DF$train)
 summary(glm2)
 anova(glm2, test = "Chisq")
+
+predictions.glm1 <- predict(glm1, Split.DF$test[, -c(1, 2, 3, 13, 14)])
+SSE.glm1 <- sum((predictions.glm1 - Split.DF$test$pick)^2)
+RMSE.glm1 <- sqrt(SSE.glm1/nrow(Split.DF$test))
+RMSE.glm1
+
+
+predictions.glm2 <- predict(glm2, Split.DF$test[, -c(1, 2, 3, 13, 14)])
+SSE.glm2 <- sum((predictions.glm2 - Split.DF$test$pick)^2)
+RMSE.glm2 <- sqrt(SSE.glm2/nrow(Split.DF$test))
+RMSE.glm2
 ```
 
 Lasso and Ridge
@@ -339,8 +378,148 @@ Lasso and Ridge
 set.seed = 18
 library(glmnet)
 
+x <- as.matrix(Split.DF$train[,-c(1, 2, 3, 13, 14)])
+y_train <- Split.DF$train$pick
+
+x_test <- as.matrix(Split.DF$test[,-c(1, 2, 3, 13, 14)])
+y_test <- Split.DF$test$pick
+
+lambdas <- 10^seq(2, -3, by = -.1)
+
+ridge.reg <- glmnet(x, y_train, nlambda = 25, alpha = 0, family = 'poisson', lambda = lambdas)
+
+summary(ridge.reg)
+plot(ridge.reg)
+
+lasso.reg <- glmnet(x, y_train, nlambda = 25, alpha = 1, family = 'poisson', lambda = lambdas)
+
+summary(lasso.reg)
+plot(lasso.reg)
+
+cv_ridge <- cv.glmnet(x, y_train, alpha = 0, lambda = lambdas)
+optimal_lambda.ridge <- cv_ridge$lambda.min
+optimal_lambda.ridge
+
+cv_lasso <- cv.glmnet(x, y_train, alpha = 1, lambda = lambdas)
+optimal_lambda.lasso <- cv_ridge$lambda.min
+optimal_lambda.lasso
 
 
+# Compute R^2 from true and predicted values
+eval_results <- function(true, predicted, df) {
+  SSE <- sum((predicted - true)^2)
+  SST <- sum((true - mean(true))^2)
+  R_square <- 1 - SSE / SST
+  RMSE = sqrt(SSE/nrow(df))
+
+  
+# Model performance metrics
+data.frame(
+  RMSE = RMSE,
+  Rsquare = R_square
+)
+  
+}
+
+lasso_model <- glmnet(x, y_train, alpha = 1, lambda = optimal_lambda.lasso, standardize = TRUE)
+
+predictions_train <- predict(lasso_model, s = optimal_lambda.lasso, newx = x)
+eval_results(y_train, predictions_train, Split.DF$train)
+
+predictions_test <- predict(lasso_model, s = optimal_lambda.lasso, newx = x_test)
+eval_results(y_test, predictions_test, Split.DF$test)
+
+predictions_validate <- predict(lasso_model, s = optimal_lambda.lasso, newx = as.matrix(Split.DF$validate[,-c(1, 2, 3, 13, 14)]))
+eval_results(Split.DF$validate$pick, predictions_validate, Split.DF$validate)
+
+
+
+ridge_model <- glmnet(x, y_train, alpha = 0, lambda = optimal_lambda.ridge, standardize = TRUE)
+
+predictions_train <- predict(ridge_model, s = optimal_lambda.ridge, newx = x)
+eval_results(y_train, predictions_train, Split.DF$train)
+
+predictions_test <- predict(ridge_model, s = optimal_lambda.ridge, newx = x_test)
+eval_results(y_test, predictions_test, Split.DF$test)
+
+predictions_validate <- predict(ridge_model, s = optimal_lambda.ridge, newx = as.matrix(Split.DF$validate[,-c(1, 2, 3, 13, 14)]))
+eval_results(Split.DF$validate$pick, predictions_validate, Split.DF$validate)
 ```
 
+Random Forest
+```{r}
+library(randomForest)
+
+oob.err=double(9)
+test.err=double(9)
+
+for (mtry in 1:9) {
+
+rf1 <- randomForest(pick ~ heightInches + 
+                      weight + 
+                      ageAtDraft +
+                      combineShuttle + 
+                      combineBroad + 
+                      combine3cone + 
+                      combineBench + 
+                      combine40yd + 
+                      combineVert, 
+                    data = Split.DF$train[, -c(1, 2, 3, 13)], mtry = mtry, ntree=500,
+                    xtest = Split.DF$test[, -c(1, 2, 3, 13, 14)],
+                    yest = Split.DF$test$pick, keep.forest = T)
+oob.err[mtry] = rf1$mse[500] #error of all trees fitted
+
+pred <- predict(rf1, Split.DF$test[, -c(1, 2, 3, 13, 14)], type = "response")
+test.err[mtry] = with(Split.DF$test[, -c(1, 2, 3, 13)], mean((pick - pred)^2))
+
+cat(mtry, " ")
+}
+
+which.min(test.err)
+
+
+rf2 <- randomForest(pick ~ heightInches + 
+                      weight + 
+                      ageAtDraft +
+                      combineShuttle + 
+                      combineBroad + 
+                      combine3cone + 
+                      combineBench + 
+                      combine40yd + 
+                      combineVert, 
+                    data = Split.DF$train[, -c(1, 2, 3, 13)], type = "regression", mtry = 4, ntree=500, 
+                    xtest = Split.DF$test[, -c(1, 2, 3, 13, 14)], 
+                    ytest = Split.DF$test$pick, keep.forest = T)
+
+predictions.rf <- predict(rf2, Split.DF$test[, -c(1, 2, 3, 13, 14)])
+
+SSE.rf <- sum((predictions.rf - Split.DF$test$pick)^2)
+RMSE.rf <- sqrt(SSE.rf/nrow(Split.DF$test))
+RMSE.rf
+
+varImpPlot(rf2)
+importance(rf2)
+```
+
+Gradient booster
+```{r}
+library(gbm)
+gbm1 <-gbm(pick ~ heightInches + 
+                      weight + 
+                      ageAtDraft +
+                      combineShuttle + 
+                      combineBroad + 
+                      combine3cone + 
+                      combineBench + 
+                      combine40yd + 
+                      combineVert, 
+           distribution = "gaussian", data = Split.DF$train[, -c(1, 2, 3, 13)])
+
+summary(gbm1, plot = T)
+
+predictions.gbm <- predict(gbm1, Split.DF$test[, -c(1, 2, 3, 13, 14)])
+SSE.gbm <- sum((predictions.gbm - Split.DF$test$pick)^2)
+RMSE.gbm <- sqrt(SSE.gbm/nrow(Split.DF$test))
+RMSE.gbm
+```
 
