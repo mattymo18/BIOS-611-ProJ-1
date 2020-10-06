@@ -1,5 +1,6 @@
 library(tidyverse)
 library(randomForest)
+library(knitr)
 
 set.seed = 18
 
@@ -30,27 +31,27 @@ Split.DF = split(Clean_Data, DF)
 oob.err=double(9)
 test.err=double(9)
 
-# for (mtry in 1:9) {
-#   
-#   rf1 <- randomForest(pick ~ heightInches + 
-#                         weight + 
-#                         ageAtDraft +
-#                         combineShuttle + 
-#                         combineBroad + 
-#                         combine3cone + 
-#                         combineBench + 
-#                         combine40yd + 
-#                         combineVert, 
-#                       data = Split.DF$train[, -c(1, 2, 3, 13)], mtry = mtry, ntree=500,
-#                       xtest = Split.DF$test[, -c(1, 2, 3, 13, 14)],
-#                       yest = Split.DF$test$pick, keep.forest = T)
-#   oob.err[mtry] = rf1$mse[500] #error of all trees fitted
-#   
-#   pred <- predict(rf1, Split.DF$test[, -c(1, 2, 3, 13, 14)], type = "response")
-#   test.err[mtry] = with(Split.DF$test[, -c(1, 2, 3, 13)], mean((pick - pred)^2))
-#   
-#   cat(mtry, " ")
-# }
+for (mtry in 1:9) {
+
+  rf1 <- randomForest(pick ~ heightInches +
+                        weight +
+                        ageAtDraft +
+                        combineShuttle +
+                        combineBroad +
+                        combine3cone +
+                        combineBench +
+                        combine40yd +
+                        combineVert,
+                      data = Split.DF$train[, -c(1, 2, 3, 13)], mtry = mtry, ntree=500,
+                      xtest = Split.DF$test[, -c(1, 2, 3, 13, 14)],
+                      yest = Split.DF$test$pick, keep.forest = T)
+  oob.err[mtry] = rf1$mse[500] #error of all trees fitted
+
+  pred <- predict(rf1, Split.DF$test[, -c(1, 2, 3, 13, 14)], type = "response")
+  test.err[mtry] = with(Split.DF$test[, -c(1, 2, 3, 13)], mean((pick - pred)^2))
+
+  cat(mtry, " ")
+}
 
 which.min(test.err)
 
@@ -78,3 +79,7 @@ varImpPlot(rf2)
 importance(rf2)
 
 saveRDS(rf2, "derived_models/best.rf.mod.rds")
+
+rf.importance.table <- kable(importancerf2)
+
+saveRDS(rf.importance.table, "derived_graphs/rf.importance.table.rds")
