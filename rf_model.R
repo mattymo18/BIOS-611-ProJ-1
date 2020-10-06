@@ -17,30 +17,40 @@ DF.Mixed <- read.csv("derived_data/Df.Mix.csv") %>%
   mutate(Type = "3")
 Skill.Stren.DF <- rbind(DF.Off.skill, DF.Off.strength, DF.Def.strength, DF.Def.skill, DF.Mixed)
 
+set.seed <- 18 #this is my lucky number 
+spec = c(train = .6, test = .2, validate = .2)
+DF = sample(cut(
+  seq(nrow(Clean_Data)), 
+  nrow(Clean_Data)*cumsum(c(0,spec)),
+  labels = names(spec)
+))
+
+Split.DF = split(Clean_Data, DF)
+
 oob.err=double(9)
 test.err=double(9)
 
-for (mtry in 1:9) {
-  
-  rf1 <- randomForest(pick ~ heightInches + 
-                        weight + 
-                        ageAtDraft +
-                        combineShuttle + 
-                        combineBroad + 
-                        combine3cone + 
-                        combineBench + 
-                        combine40yd + 
-                        combineVert, 
-                      data = Split.DF$train[, -c(1, 2, 3, 13)], mtry = mtry, ntree=500,
-                      xtest = Split.DF$test[, -c(1, 2, 3, 13, 14)],
-                      yest = Split.DF$test$pick, keep.forest = T)
-  oob.err[mtry] = rf1$mse[500] #error of all trees fitted
-  
-  pred <- predict(rf1, Split.DF$test[, -c(1, 2, 3, 13, 14)], type = "response")
-  test.err[mtry] = with(Split.DF$test[, -c(1, 2, 3, 13)], mean((pick - pred)^2))
-  
-  cat(mtry, " ")
-}
+# for (mtry in 1:9) {
+#   
+#   rf1 <- randomForest(pick ~ heightInches + 
+#                         weight + 
+#                         ageAtDraft +
+#                         combineShuttle + 
+#                         combineBroad + 
+#                         combine3cone + 
+#                         combineBench + 
+#                         combine40yd + 
+#                         combineVert, 
+#                       data = Split.DF$train[, -c(1, 2, 3, 13)], mtry = mtry, ntree=500,
+#                       xtest = Split.DF$test[, -c(1, 2, 3, 13, 14)],
+#                       yest = Split.DF$test$pick, keep.forest = T)
+#   oob.err[mtry] = rf1$mse[500] #error of all trees fitted
+#   
+#   pred <- predict(rf1, Split.DF$test[, -c(1, 2, 3, 13, 14)], type = "response")
+#   test.err[mtry] = with(Split.DF$test[, -c(1, 2, 3, 13)], mean((pick - pred)^2))
+#   
+#   cat(mtry, " ")
+# }
 
 which.min(test.err)
 
@@ -66,3 +76,5 @@ RMSE.rf
 
 varImpPlot(rf2)
 importance(rf2)
+
+saveRDS(rf2, "derived_models/best.rf.mod.rds")

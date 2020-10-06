@@ -17,6 +17,16 @@ DF.Mixed <- read.csv("derived_data/Df.Mix.csv") %>%
   mutate(Type = "3")
 Skill.Stren.DF <- rbind(DF.Off.skill, DF.Off.strength, DF.Def.strength, DF.Def.skill, DF.Mixed)
 
+set.seed <- 18 #this is my lucky number 
+spec = c(train = .6, test = .2, validate = .2)
+DF = sample(cut(
+  seq(nrow(Clean_Data)), 
+  nrow(Clean_Data)*cumsum(c(0,spec)),
+  labels = names(spec)
+))
+
+Split.DF = split(Clean_Data, DF)
+
 
 x <- as.matrix(Split.DF$train[,-c(1, 2, 3, 13, 14)])
 y_train <- Split.DF$train$pick
@@ -84,3 +94,7 @@ eval_results(y_test, predictions_test, Split.DF$test)
 
 predictions_validate <- predict(ridge_model, s = optimal_lambda.ridge, newx = as.matrix(Split.DF$validate[,-c(1, 2, 3, 13, 14)]))
 eval_results(Split.DF$validate$pick, predictions_validate, Split.DF$validate)
+
+
+saveRDS(lasso_model, "derived_models/best.lasso.mod.rds")
+saveRDS(ridge_model, "derived_models/best.ridge.mod.rds")

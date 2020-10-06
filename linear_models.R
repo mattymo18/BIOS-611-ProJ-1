@@ -16,6 +16,15 @@ DF.Mixed <- read.csv("derived_data/Df.Mix.csv") %>%
   mutate(Type = "3")
 Skill.Stren.DF <- rbind(DF.Off.skill, DF.Off.strength, DF.Def.strength, DF.Def.skill, DF.Mixed)
 
+set.seed <- 18 #this is my lucky number 
+spec = c(train = .6, test = .2, validate = .2)
+DF = sample(cut(
+  seq(nrow(Clean_Data)), 
+  nrow(Clean_Data)*cumsum(c(0,spec)),
+  labels = names(spec)
+))
+
+Split.DF = split(Clean_Data, DF)
 
 lm1 <- lm(pick ~ heightInches + 
             weight + 
@@ -49,9 +58,14 @@ summary(lm3)
 lm4 <- step(lm3, trace = 0)
 summary(lm4)
 
+saveRDS(lm4, "derived_models/best.lin.mod.rds")
+
+
 anova(lm3, lm4)
 
 predictions.lm4 <- predict(lm4, Split.DF$test[, -c(1, 2, 3, 13, 14)])
 SSE.lm4 <- sum((predictions.lm4 - Split.DF$test$pick)^2)
 RMSE.lm4 <- sqrt(SSE.lm4/nrow(Split.DF$test))
 RMSE.lm4
+
+

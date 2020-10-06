@@ -16,6 +16,16 @@ DF.Mixed <- read.csv("derived_data/Df.Mix.csv") %>%
   mutate(Type = "3")
 Skill.Stren.DF <- rbind(DF.Off.skill, DF.Off.strength, DF.Def.strength, DF.Def.skill, DF.Mixed)
 
+set.seed <- 18 #this is my lucky number 
+spec = c(train = .6, test = .2, validate = .2)
+DF = sample(cut(
+  seq(nrow(Clean_Data)), 
+  nrow(Clean_Data)*cumsum(c(0,spec)),
+  labels = names(spec)
+))
+
+Split.DF = split(Clean_Data, DF)
+
 
 glm1 <- glm(pick ~ heightInches + 
               weight + 
@@ -50,3 +60,6 @@ predictions.glm2 <- predict(glm2, Split.DF$test[, -c(1, 2, 3, 13, 14)])
 SSE.glm2 <- sum((predictions.glm2 - Split.DF$test$pick)^2)
 RMSE.glm2 <- sqrt(SSE.glm2/nrow(Split.DF$test))
 RMSE.glm2
+
+
+saveRDS(glm2, "derived_models/best.glm.mod.rds")
