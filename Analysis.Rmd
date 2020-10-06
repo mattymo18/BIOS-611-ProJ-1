@@ -38,8 +38,6 @@ The following plots contain summary information for the data set.
 ![](derived_graphs/Age.Dist.png)
 ![](derived_graphs/40.Time.Plot.png)
 
-![](derived_graphs/Pick.Density.Plot.png)
-
 Methodology
 ===========
 
@@ -60,4 +58,15 @@ K-Means provides evidence that these clusters truly exist. There is little overl
 ![](derived_graphs/PCA.FramedClusters.png)
 The PCA further justifies accpeting the hypothesis that there are indeed three groups of players in the NFL Draft. This plot shows the primary principle component plotted against the secondary principle component. 
 
+### Clustering Analysis Conclusion
+
 These three clustering analyses justify the conclusion that there are three groups of players. Intutitively it makes perfect sense as well. Running-back, Receiver, Safety, and cornerback are all positions known for speed and agility. These players would perfrom especially well in the 40yd dash, 3cone, and shuttle run drills during the combine. On the other hand, lineman on offense and defense need to be exceedingly strong and thus perform well at the benchpress. Also, since weight and height are assesed at the combine they are used to build these clusters. 
+
+Modeling
+--------
+
+We attempt to predict pick from the set of combine times as well as the height, weight, and age of the player. This basic full regression formula is as follows: <br />
+Pick ~ Weight + Height + combine40yd + combineBench + combineVert + combine3cone + combineShuttle + combineBroad + $$\epsilon$$. <br />
+This is done using multiple different regression techniques. Below is a table displaying the results of model. Models are assessed using RMSE of predicitons on test set. 
+
+

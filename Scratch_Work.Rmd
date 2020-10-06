@@ -262,7 +262,6 @@ g13
 ```
 
 
-
 Initial split of data into test/train/validate
 ```{r}
 set.seed <- 18 #this is my lucky number 
@@ -326,16 +325,85 @@ library(ggfortify)
 library(cluster)
 pca <- prcomp(Skill.Stren.DF %>% select(heightInches, weight, 7:12), scale. = T)
 summary(pcs)
+pcs <- as.data.frame(pca$x)
+pca.data <- cbind(Skill.Stren.DF$pick, pcs)
+lm.pca <- lm(Skill.Stren.DF$pic ~ PC1 + 
+               PC2 + 
+               PC3 +
+               PC4 +
+               PC5 +
+               PC6 +
+               PC7 +
+               PC8, data = pca.data)
+summary(lm.pca)
+lm.pca2 <- step(lm.pca, trace = 0)
+summary(lm.pca2)
+bc.pca <- boxCox(lm.pca2)
+opt.lam.pca <- bc.pca$x[which.max(bc.pca$y)]
+lm.pca3 <- lm((Skill.Stren.DF$pick)^opt.lam.pca ~ PC1 + PC2 + PC4 + PC5 + PC7 + PC8, data = pca.data)
+summary(lm.pca3)
+lm.pca4 <- step(lm.pca3, trace = 0)
+summary(lm.pca4)
+lm.pca5 <- lm((Skill.Stren.DF$pick)^opt.lam.pca ~ PC1 + PC2 + PC5 + PC8, data = pca.data)
+summary(lm.pca5)
+
+
+glm.pca <- glm(Skill.Stren.DF$pic ~ PC1 + 
+               PC2 + 
+               PC3 +
+               PC4 +
+               PC5 +
+               PC6 +
+               PC7 +
+               PC8, data = pca.data, family = "poisson")
+summary(glm.pca)
+glm2.pca <- step(glm.pca, trace = 0)
+anova(glm2.pca, glm.pca)
+
+
+
 plot(pca,type = "l", main ="Screen plot for PCA")
 autoplot(pca, loadings=T, loadings.colour = 'blue', loadings.label.size = 6) #plots eigenvectors
 # autoplot(kmeans(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3), data = Skill.Stren.DF %>% select(heightInches, weight, 7:12))
 
 autoplot(pam(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3), frame = T, fram.type = 'norm') +
-  scale_color_discrete(name="Type", labels = c("Skill", "Strength", "Mixed")) +
+  scale_color_continuous(type = Skill.Stren.DF$pick)+
   guides(fill = F)
 
 autoplot(silhouette(pam(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3)))
+
+DF <- cbind(Skill.Stren.DF, pcs)
+
+ggplot(DF, aes(x=PC1, y=PC2)) +
+         geom_point(aes(color = pick), alpha = .5)
 ```
+
+Principle component regressions
+```{r}
+library("pls")
+set.seed = 18
+pcr.mod <- pcr(pick ~ heightInches + 
+              weight + 
+              ageAtDraft + 
+              combine40yd + 
+              combineVert + 
+              combineBench +
+              combineShuttle +
+              combineBroad +
+              combine3cone, data = Split.DF$train, scale = T, validation = "CV")
+summary(pcr.mod)
+
+validationplot(pcr.mod, val.type = "R2")
+
+predictions.pcr <- predict(pcr.mod, newdata = Split.DF$test, ncomp = 3)
+SSE.pcr <- sum((predictions.pcr - Split.DF$test$pick)^2)
+RMSE.pcr <- sqrt(SSE.pcr/nrow(Split.DF$test))
+RMSE.pcr
+```
+
+
+
+
 
 Models
 ------
@@ -379,6 +447,20 @@ predictions.lm4 <- predict(lm4, Split.DF$test[, -c(1, 2, 3, 13, 14)], type = "re
 SSE.lm4 <- sum((predictions.lm4 - Split.DF$test$pick)^2)
 RMSE.lm4 <- sqrt(SSE.lm4/nrow(Split.DF$test))
 RMSE.lm4
+
+vif(lm4)
+
+lm5 <- lm((pick)^lam ~ ageAtDraft + 
+            combine40yd + 
+            combineBench + 
+            combineBroad + 
+            combine3cone, data = Split.DF$train)
+
+predictions.lm5 <- predict(lm5, Split.DF$test[, -c(1, 2, 3, 13, 14)], type = "response")
+SSE.lm5 <- sum((predictions.lm5 - Split.DF$test$pick)^2)
+RMSE.lm5 <- sqrt(SSE.lm5/nrow(Split.DF$test))
+RMSE.lm5
+vif(lm5)
 ```
 
 GLM
@@ -393,16 +475,9 @@ glm1 <- glm(pick ~ heightInches +
               combineBroad +
               combine3cone, family = poisson, data = Split.DF$train)
 anova(glm1, test = "Chisq")
-step(glm1, direction = "both", trace = 0)
 
-glm2 <- glm(pick ~ heightInches + 
-              ageAtDraft + 
-              combine40yd + 
-              combineVert + 
-              combineBench +
-              combineShuttle +
-              combineBroad +
-              combine3cone, family = poisson, data = Split.DF$train)
+
+glm2 <- step(glm1, direction = "both", trace = 0)
 summary(glm2)
 anova(glm2, test = "Chisq")
 
@@ -416,8 +491,6 @@ predictions.glm2 <- predict(glm2, Split.DF$test[, -c(1, 2, 3, 13, 14)])
 SSE.glm2 <- sum((predictions.glm2 - Split.DF$test$pick)^2)
 RMSE.glm2 <- sqrt(SSE.glm2/nrow(Split.DF$test))
 RMSE.glm2
-
-
 
 ```
 
@@ -576,9 +649,14 @@ gbm1 <-gbm(pick ~ heightInches +
                       combineBench + 
                       combine40yd + 
                       combineVert, 
-           distribution = "gaussian", data = Split.DF$train[, -c(1, 2, 3, 13)])
+           distribution = "gaussian", data = Split.DF$train[, -c(1, 2, 3, 13)], interaction.depth = 3, n.trees = 500)
 
 summary(gbm1, plot = T)
+predictions.gbm <- predict(gbm1, Split.DF$train[, -c(1, 2, 3, 13, 14)])
+SSE.gbm <- sum((predictions.gbm - Split.DF$train$pick)^2)
+RMSE.gbm <- sqrt(SSE.gbm/nrow(Split.DF$train))
+RMSE.gbm
+
 
 predictions.gbm <- predict(gbm1, Split.DF$test[, -c(1, 2, 3, 13, 14)])
 SSE.gbm <- sum((predictions.gbm - Split.DF$test$pick)^2)
