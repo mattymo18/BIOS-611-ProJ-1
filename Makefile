@@ -13,6 +13,15 @@ Analysis.pdf: Analysis.Rmd\
  derived_graphs/PCA.FramedClusters.png
 	R -e "rmarkdown::render('Analysis.Rmd')"
 
+derived_graphs/RMSE.Table.rds: derived_data/Clean_Data.csv\
+ derived_data/Off.Skill.csv\
+ derived_data/Off.Strength.csv\
+ derived_data/Def.Skill.csv\
+ derived_data/Def.Strength.csv\
+ derived_data/Df.Mix.csv\
+ model.eval.table.R
+	Rscript model.eval.table.R
+
 derived_models/best.pcr.mod.rds: derived_data/Clean_Data.csv\
  derived_data/Off.Skill.csv\
  derived_data/Off.Strength.csv\
@@ -50,7 +59,7 @@ derived_models/best.gbm.mod.rds: derived_data/Clean_Data.csv\
  derived_models/gbm_models.R
 	Rscript gbm_models.R
 	
-
+derived_graphs/rf.importance.table.rds\
 derived_models/best.rf.mod.rds: derived_data/Clean_Data.csv\
  derived_data/Off.Skill.csv\
  derived_data/Off.Strength.csv\
