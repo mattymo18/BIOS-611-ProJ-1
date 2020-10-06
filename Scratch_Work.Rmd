@@ -84,8 +84,8 @@ g1 <- ggplot(DF.Off.skill, mapping = aes(x = combine40yd, y = pick, color = posi
   theme(legend.position = c(0, 1),
                   legend.justification = c(0, 1))
 
-g2 <- ggplot(DF.Off.strength, mapping = aes(x = combineBench, y = pick, color = position)) +     geom_point(alpha = .5) +
-  xlab("Benchpress") +
+g2 <- ggplot(DF.Off.strength, mapping = aes(x = combine40yd, y = pick, color = position)) +     geom_point(alpha = .5) +
+  xlab("40 Time") +
   ylab("Pick") +
   labs(color = "Position")
 
@@ -97,15 +97,15 @@ g3 <- ggplot(DF.Def.skill, mapping = aes(x = combine40yd, y = pick, color = posi
   theme(legend.position = c(0, 1),
                   legend.justification = c(0, 1))
 
-g4 <- ggplot(DF.Def.strength, mapping = aes(x = combineBench, y = pick, color = position)) +     geom_point(alpha = .5) +
-  xlab("Benchpress") +
+g4 <- ggplot(DF.Def.strength, mapping = aes(x = combine40yd, y = pick, color = position)) +     geom_point(alpha = .5) +
+  xlab("40 Time") +
   ylab("Pick") +
   labs(color = "Position")
 
-# g1
-# g2
-# g3
-# g4
+g1
+g2
+g3
+g4
 ```
 
 ```{r}
@@ -121,7 +121,7 @@ g5 <- ggplot(DF.Off.skill, aes(weight)) +
   xlab("Weights") +
   ylab("") +
   labs(color="Position") +
-   theme(legend.position = c(0, 1),
+   theme(legend.position = c(.8, 1),
                   legend.justification = c(0, 1))
 
 g6 <- ggplot(DF.Off.strength, aes(weight)) +
@@ -132,10 +132,28 @@ g6 <- ggplot(DF.Off.strength, aes(weight)) +
   labs(color="Position") +
    theme(legend.position = c(0, 1),
                   legend.justification = c(0, 1))
+g5.2 <- ggplot(DF.Def.skill, aes(weight)) +
+  geom_density(aes(color=position), alpha=.5) +
+  xlim(170, 400) +
+  xlab("Weights") +
+  ylab("") +
+  labs(color="Position") +
+   theme(legend.position = c(.8, 1),
+                  legend.justification = c(0, 1))
+
+g6.2 <- ggplot(DF.Def.strength, aes(weight)) +
+  geom_density(aes(color=position), alpha=.5) +
+  xlim(170,400) +
+  xlab("Weights") +
+  ylab("") +
+  labs(color="Position") +
+   theme(legend.position = c(0, 1),
+                  legend.justification = c(0, 1))
 # g5
 # g6
-
-Graph2 <- grid.arrange(g5, g6, nrow=1, top = "Weight Distribution by Position (Offense)")
+# g5.2
+# g6.2
+Graph2 <- grid.arrange(g5, g6, g5.2, g6.2, nrow=2, top = "Weight Distribution by Position")
 ```
 
 ```{r}
@@ -200,6 +218,20 @@ g11
 
 ```
 
+```{r}
+g12 <- DF.clean %>% 
+  filter(position != "QB" & position != "LS") %>% 
+  ggplot(aes(x=pick)) +
+  geom_density() +
+  xlab("Pick") +
+  ylab("Density")
+g12
+```
+
+
+
+
+
 Read in full set
 ```{r}
 Clean_Data <- read.csv("derived_data/Clean_Data.csv") %>% 
@@ -216,13 +248,20 @@ DF.Def.skill <- read.csv("derived_data/Def.Skill.csv" )%>%
   mutate(Type = "1")
 DF.Def.strength <- read.csv("derived_data/Def.Strength.csv" )%>% 
   mutate(Type = "2")
-DF.Def.LBs <- read.csv("derived_data/Def.LBs.csv") %>% 
+DF.Mixed <- read.csv("derived_data/Df.Mix.csv") %>% 
   mutate(Type = "3")
-Skill.Stren.DF <- rbind(DF.Off.skill, DF.Off.strength, DF.Def.strength, DF.Def.skill, DF.Def.LBs)
+Skill.Stren.DF <- rbind(DF.Off.skill, DF.Off.strength, DF.Def.strength, DF.Def.skill, DF.Mixed)
 ```
 
-Clustering
-------
+```{r}
+g13 <- Skill.Stren.DF %>% 
+  ggplot(aes(x=Type, y=combine40yd, color = Type)) +
+  geom_boxplot() +
+  scale_color_discrete(name="Type", labels = c("Skill", "Strength", "Mixed"))
+g13
+```
+
+
 
 Initial split of data into test/train/validate
 ```{r}
@@ -237,6 +276,8 @@ DF = sample(cut(
 Split.DF = split(Clean_Data, DF)
 ```
 
+Clustering
+------
 TSNE
 ```{r}
 set.seed = 18
@@ -283,17 +324,21 @@ Principle Component anlsysis
 ```{r}
 library(ggfortify)
 library(cluster)
-pcs <- prcomp(Skill.Stren.DF %>% select(heightInches, weight, 7:12), scale. = T)
+pca <- prcomp(Skill.Stren.DF %>% select(heightInches, weight, 7:12), scale. = T)
 summary(pcs)
-autoplot(pcs, loadings=T, loadings.colour = 'blue', loadings.label.size = 6) #plots eigenvectors
+plot(pca,type = "l", main ="Screen plot for PCA")
+autoplot(pca, loadings=T, loadings.colour = 'blue', loadings.label.size = 6) #plots eigenvectors
 # autoplot(kmeans(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3), data = Skill.Stren.DF %>% select(heightInches, weight, 7:12))
 
 autoplot(pam(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3), frame = T, fram.type = 'norm') +
-  scale_color_discrete(name="Type", labels = c("Skill", "Strength", "Mixed"))
+  scale_color_discrete(name="Type", labels = c("Skill", "Strength", "Mixed")) +
+  guides(fill = F)
 
 autoplot(silhouette(pam(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3)))
 ```
 
+Models
+------
 LM
 ```{r}
 lm1 <- lm(pick ~ heightInches + 
@@ -330,7 +375,7 @@ summary(lm4)
 
 anova(lm3, lm4)
 
-predictions.lm4 <- predict(lm4, Split.DF$test[, -c(1, 2, 3, 13, 14)])
+predictions.lm4 <- predict(lm4, Split.DF$test[, -c(1, 2, 3, 13, 14)], type = "response")
 SSE.lm4 <- sum((predictions.lm4 - Split.DF$test$pick)^2)
 RMSE.lm4 <- sqrt(SSE.lm4/nrow(Split.DF$test))
 RMSE.lm4
@@ -371,6 +416,9 @@ predictions.glm2 <- predict(glm2, Split.DF$test[, -c(1, 2, 3, 13, 14)])
 SSE.glm2 <- sum((predictions.glm2 - Split.DF$test$pick)^2)
 RMSE.glm2 <- sqrt(SSE.glm2/nrow(Split.DF$test))
 RMSE.glm2
+
+
+
 ```
 
 Lasso and Ridge
@@ -491,14 +539,29 @@ rf2 <- randomForest(pick ~ heightInches +
                     xtest = Split.DF$test[, -c(1, 2, 3, 13, 14)], 
                     ytest = Split.DF$test$pick, keep.forest = T)
 
-predictions.rf <- predict(rf2, Split.DF$test[, -c(1, 2, 3, 13, 14)])
+predictions.rf2 <- predict(rf2, Split.DF$test[, -c(1, 2, 3, 13, 14)])
 
-SSE.rf <- sum((predictions.rf - Split.DF$test$pick)^2)
-RMSE.rf <- sqrt(SSE.rf/nrow(Split.DF$test))
-RMSE.rf
+SSE.rf2 <- sum((predictions.rf2 - Split.DF$test$pick)^2)
+RMSE.rf2 <- sqrt(SSE.rf2/nrow(Split.DF$test))
+RMSE.rf2
+
 
 varImpPlot(rf2)
 importance(rf2)
+
+
+rf3 <- rf2 <- randomForest(pick ~ heightInches + 
+                      weight + 
+                      ageAtDraft +
+                      combineShuttle + 
+                      combineBroad + 
+                      combine3cone + 
+                      combineBench + 
+                      combine40yd + 
+                      combineVert, 
+                    data = Split.DF$train[, -c(1, 2, 3, 13)], type = "regression", mtry = 4, ntree=500, 
+                    xtest = Split.DF$test[, -c(1, 2, 3, 13, 14)], 
+                    ytest = Split.DF$test$pick, keep.forest = T)
 ```
 
 Gradient booster

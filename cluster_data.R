@@ -8,9 +8,9 @@ DF.Def.skill <- read.csv("derived_data/Def.Skill.csv" )%>%
   mutate(Type = "1")
 DF.Def.strength <- read.csv("derived_data/Def.Strength.csv" )%>% 
   mutate(Type = "2")
-DF.Def.LBs <- read.csv("derived_data/Def.LBs.csv") %>% 
+DF.Mixed <- read.csv("derived_data/DF.Mix.csv") %>% 
   mutate(Type = "3")
-Skill.Stren.DF <- rbind(DF.Off.skill, DF.Off.strength, DF.Def.strength, DF.Def.skill, DF.Def.LBs)
+Skill.Stren.DF <- rbind(DF.Off.skill, DF.Off.strength, DF.Def.strength, DF.Def.skill, DF.Mixed)
 
 set.seed = 18 #my favorite number
 
@@ -36,7 +36,7 @@ fit1 <- Rtsne(Skill.Stren.DF %>% select(heightInches, weight, 7:12), dims=2, che
 g2 <- ggplot(fit1$Y %>% as.data.frame() %>% as_tibble() %>% mutate(label=cc$cluster),aes(V1,V2)) +
   geom_point(aes(color=factor(label))) +
   scale_color_discrete(name="Type", labels = c("Skill", "Strength", "Mixed"))
-ggsave("derived_graphs/K-Means.Cluster.png", plot = g1)
+ggsave("derived_graphs/K-Means.Cluster.png", plot = g2)
 
 
 # Principle Component Analysis
@@ -46,7 +46,8 @@ library(cluster)
 pcs <- prcomp(Skill.Stren.DF %>% select(heightInches, weight, 7:12), scale. = T)
 g3 <- autoplot(pcs, loadings=T, loadings.colour = 'blue', loadings.label.size = 6)
 g4 <- autoplot(pam(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3), frame = T, fram.type = 'norm') +
-  scale_color_discrete(name="Type", labels = c("Skill", "Strength", "Mixed"))
+  scale_color_discrete(name="Type", labels = c("Skill", "Strength", "Mixed"))+
+  guides(fill = F)
 g5 <- autoplot(silhouette(pam(Skill.Stren.DF %>% select(heightInches, weight, 7:12), 3)))
 
 ggsave("derived_graphs/PCA.Eignen.png", plot = g3)

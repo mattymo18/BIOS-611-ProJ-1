@@ -33,7 +33,7 @@ DF.Def.skill <- DF.clean %>%
   filter(position == "DB" | position == "S")
 DF.Def.strength <- DF.clean %>% 
   filter(position == "DL" | position == "DT" | position == "DE")
-DF.Def.LBs <- DF.clean %>% 
+DF.Mixed <- DF.clean %>% 
   filter(position == "LB" | position == "OLB" | position == "TE")
 
 #save new csv's
@@ -41,5 +41,5 @@ write.csv(DF.Off.skill, "derived_data/Off.Skill.csv")
 write.csv(DF.Off.strength, "derived_data/Off.Strength.csv")
 write.csv(DF.Def.skill, "derived_data/Def.Skill.csv")
 write.csv(DF.Def.strength, "derived_data/Def.Strength.csv")
-write.csv(DF.Def.LBs, "derived_data/Def.LBs.csv")
+write.csv(DF.Mixed, "derived_data/Df.Mix.csv")
 

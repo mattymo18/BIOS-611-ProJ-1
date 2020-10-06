@@ -12,9 +12,9 @@ DF.Def.skill <- read.csv("derived_data/Def.Skill.csv" )%>%
   mutate(Type = "1")
 DF.Def.strength <- read.csv("derived_data/Def.Strength.csv" )%>% 
   mutate(Type = "2")
-DF.Def.LBs <- read.csv("derived_data/Def.LBs.csv") %>% 
+DF.Mixed <- read.csv("derived_data/Df.Mix.csv") %>% 
   mutate(Type = "3")
-Skill.Stren.DF <- rbind(DF.Off.skill, DF.Off.strength, DF.Def.strength, DF.Def.skill, DF.Def.LBs)
+Skill.Stren.DF <- rbind(DF.Off.skill, DF.Off.strength, DF.Def.strength, DF.Def.skill, DF.Mixed)
 
 
 glm1 <- glm(pick ~ heightInches + 
