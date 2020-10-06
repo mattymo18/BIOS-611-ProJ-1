@@ -66,7 +66,7 @@ Modeling
 --------
 
 We attempt to predict pick from the set of combine times as well as the height, weight, and age of the player. This basic full regression formula is as follows: <br />
-Pick ~ Weight + Height + combine40yd + combineBench + combineVert + combine3cone + combineShuttle + combineBroad + $$\epsilon$$. <br />
+Pick ~ Weight + Height + combine40yd + combineBench + combineVert + combine3cone + combineShuttle + combineBroad +$$\epsilon$$. <br />
 This is done using multiple different regression techniques. Below is a table displaying the results of model. Models are assessed using RMSE of predicitons on test set. 
 
 
