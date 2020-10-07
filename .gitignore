@@ -1,9 +1,5 @@
 .local/*
 .rstudio/*
-derived_data/*.csv
 Rplots.pdf*
 .config/*
 .gitconfig/*
-derived_graphs/*.png
-derived_models/*.rds
-derived_graphs/*.rds
