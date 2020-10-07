@@ -85,13 +85,10 @@ According to the plot above, the age of the player seems to be quite significant
 Conclusion
 ==========
 
-Results
--------
-
-### Clustering
+#### Clustering
 According to the clustering analysis, we have established three groups of players that enter the NFL draft and participate in the combine: Skill, Strength, and Mixed. Intuitvely, this division makes perfect sense considering where players lineup on the field. The stronger players that perform better in strength events all lineup right on the line of scrimmage. Skill position players that are agile and quicker lineup as recievers or in the backfield. Mixed players do both, tight ends can lineup as a blocker or a receiver and must be both strong and skilled. These three clustering analyses justify the conclusion that there are three groups of players.
 
-### Modeling
+#### Modeling
 From the data used in this experiment, it does not seem reasonable to use this data to predict when a player will be selected in the nfl draft. The models built do not seem to have strong enough predicting power to make reasonable predictions.
 
 Future Work
