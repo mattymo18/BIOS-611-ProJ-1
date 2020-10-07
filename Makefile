@@ -69,7 +69,6 @@ derived_models/best.rf.mod.rds: derived_data/Clean_Data.csv\
  derived_models/rf_model.R
 	Rscript rf_model.R
  
-
 derived_models/best.lin.mod.rds: derived_data/Clean_Data.csv\
  derived_data/Off.Skill.csv\
  derived_data/Off.Strength.csv\
