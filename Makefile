@@ -103,6 +103,7 @@ derived_graphs/Boxplot.by.round.png:\
 	Rscript tidy_graphs.r
 	
 derived_graphs/PCA.Eigen.png\
+derived_graphs/PCA.Silhouette.png\
 derived_graphs/PCA.FramedClusters.png\
 derived_graphs/K-Means.Cluster.png\
 derived_graphs/TSNE.Cluster.png:\
