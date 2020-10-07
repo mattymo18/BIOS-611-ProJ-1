@@ -2,6 +2,8 @@
 
 clean:
 	rm derived_data/*
+	rm derived_graphs/*
+	rm derived_models/*
 	
 Analysis.pdf: Analysis.Rmd\
  derived_graphs/Boxplot.by.round.png\
