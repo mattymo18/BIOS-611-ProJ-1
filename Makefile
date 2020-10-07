@@ -114,3 +114,16 @@ derived_graphs/TSNE.Cluster.png:\
  cluster_data.R
 	Rscript cluster_data.R
 	
+	
+preliminary_figures/Boxplot.by.round.png\
+preliminary_figures/Off.Def.40s.png\
+preliminary_figures/Off.Weights.png\
+preliminary_figures/Age.Dist.png:\
+ derived_data/Def.Skill.csv\
+ derived_data/Def.Strength.csv\
+ derived_data/Off.Skill.csv\
+ derived_data/Off.Strength.csv\
+ tidy_graphs.r
+	Rscript tidy_graphs.r
+
+

@@ -18,20 +18,20 @@ PROPOSAL
   
 #### Preliminary Figures:
 
-![](derived_graphs/Boxplot.by.round.png)
+![](preliminary_figures/Boxplot.by.round.png)
 
 The figure above shows boxplots for each position by the round the player was picked. Offensive lineman seam to be taken early than other positions. WRs, TEs, and RBs are often taken later. 
 
 
-![](derived_graphs/Off.Def.40s.png)
+![](preliminary_figures/Off.Def.40s.png)
 
 The figure above shows 40 yard dash times against pick taken in the draft for skill position players on offense and defense. There seems to be a slight exponential trend showing that player who ran slower got picked slightly later. Also, WRs and RBs seems to be the fastest in the draft. 
 
-![](derived_graphs/Off.Weights.png)
+![](preliminary_figures/Off.Weights.png)
 
 The figure above shows the distribution of weights for offensive players in the draft. WRs seems to have the smallest average weight, while the offenseive lineman all weight similarily. 
 
-![](derived_graphs/Age.Dist.png)
+![](preliminary_figures/Age.Dist.png)
 
 The figure above shows the age distribution of players when they enter the draft categorized by position. Most players seem to be between 22 and 24. It would be interesting to see the effect age has on pick. 
 
