@@ -82,6 +82,5 @@ According to the table, the random forest model seemed to perfrom the best on th
 readRDS("derived_graphs/rf.importance.table.rds")
 ```
 
-![]("derived_graphs/rf.plot.png")
-
+![](derived_graphs/rf.plot.png)
 
