@@ -80,6 +80,6 @@ importance(rf2)
 
 saveRDS(rf2, "derived_models/best.rf.mod.rds")
 
-rf.importance.table <- kable(importancerf2)
+rf.importance.table <- kable(importance(rf2))
 
 saveRDS(rf.importance.table, "derived_graphs/rf.importance.table.rds")
