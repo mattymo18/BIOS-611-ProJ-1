@@ -28,7 +28,7 @@ derived_models/best.pcr.mod.rds: derived_data/Clean_Data.csv\
  derived_data/Def.Skill.csv\
  derived_data/Def.Strength.csv\
  derived_data/Df.Mix.csv\
- derived_models/pcr_model.R
+ pcr_model.R
 	Rscript pcr_model.R
 
 derived_models/best.lasso.mod.rds\
@@ -38,7 +38,7 @@ derived_models/best.ridge.mod.rds: derived_data/Clean_Data.csv\
  derived_data/Def.Skill.csv\
  derived_data/Def.Strength.csv\
  derived_data/Df.Mix.csv\
- derived_models/lasso_ridge_models.R
+ lasso_ridge_models.R
 	Rscript lasso_ridge_models.R
 
 derived_models/best.glm.mod.rds: derived_data/Clean_Data.csv\
@@ -47,7 +47,7 @@ derived_models/best.glm.mod.rds: derived_data/Clean_Data.csv\
  derived_data/Def.Skill.csv\
  derived_data/Def.Strength.csv\
  derived_data/Df.Mix.csv\
- derived_models/glm_models.R
+ glm_models.R
 	Rscript glm_models.R
 
 derived_models/best.gbm.mod.rds: derived_data/Clean_Data.csv\
@@ -56,7 +56,7 @@ derived_models/best.gbm.mod.rds: derived_data/Clean_Data.csv\
  derived_data/Def.Skill.csv\
  derived_data/Def.Strength.csv\
  derived_data/Df.Mix.csv\
- derived_models/gbm_models.R
+ gbm_models.R
 	Rscript gbm_models.R
 	
 derived_graphs/rf.importance.table.rds\
@@ -66,7 +66,7 @@ derived_models/best.rf.mod.rds: derived_data/Clean_Data.csv\
  derived_data/Def.Skill.csv\
  derived_data/Def.Strength.csv\
  derived_data/Df.Mix.csv\
- derived_models/rf_model.R
+ rf_model.R
 	Rscript rf_model.R
  
 derived_models/best.lin.mod.rds: derived_data/Clean_Data.csv\
@@ -75,7 +75,7 @@ derived_models/best.lin.mod.rds: derived_data/Clean_Data.csv\
  derived_data/Def.Skill.csv\
  derived_data/Def.Strength.csv\
  derived_data/Df.Mix.csv\
-derived_models/linear_models.R
+ linear_models.R
 	Rscript linear_models.R
 
 derived_data/Off.Skill.csv derived_data/Off.Strength.csv\
