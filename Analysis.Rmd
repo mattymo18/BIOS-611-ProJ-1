@@ -78,8 +78,8 @@ According to the table, the random forest model seemed to perfrom the best on th
 readRDS("derived_graphs/rf.importance.table.rds")
 ```
 
+### Variance Importance Plot
 ![](derived_graphs/rf.plot.png)
-
 According to the plot above, the age of the player seems to be quite significant in predicting where they will get drafted. This is an unexpected results and should be analysed in future experiments. Height having the least importance is a reasonable result considering the wide range of players that get drafted. Running-backs are often quite short, but still are valuable players that get drafted early. On the other hand, lineman are often tall and can just as likely get drafted early. 
 
 Conclusion
