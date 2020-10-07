@@ -45,7 +45,7 @@ Methodology
 Clustering
 ----------
 
-After suspecting there were three distinct groups, I tested this hypothesis with three clustering methods: TSNE, K-Means, and Principle Component Analysis (PCA). 
+After suspecting there were three distinct groups, We tested this hypothesis with three clustering methods: TSNE, K-Means, and Principle Component Analysis (PCA). 
 
 ### TSNE
 ![](derived_graphs/TSNE.Cluster.png)
@@ -59,18 +59,14 @@ K-Means provides evidence that these clusters truly exist. There is little overl
 ![](derived_graphs/PCA.FramedClusters.png)
 The PCA further justifies accpeting the hypothesis that there are indeed three groups of players in the NFL Draft. This plot shows the primary principle component plotted against the secondary principle component. 
 
-### Clustering Analysis Conclusion
-
-These three clustering analyses justify the conclusion that there are three groups of players. Intutitively it makes perfect sense as well. Running-back, Receiver, Safety, and cornerback are all positions known for speed and agility. These players would perfrom especially well in the 40yd dash, 3cone, and shuttle run drills during the combine. On the other hand, lineman on offense and defense need to be exceedingly strong and thus perform well at the benchpress. Also, since weight and height are assesed at the combine they are used to build these clusters. 
-
 Modeling
 --------
 
-We attempt to predict pick from the set of combine times as well as the height, weight, and age of the player. This basic full regression formula is as follows: <br />
+We attempt to predict pick from the set of combine results as well as the height, weight, and age of the player. This basic full regression formula is as follows: <br />
 
 Pick ~ Weight + Height + Age + combine40yd + combineBench + combineVert + combine3cone + combineShuttle + combineBroad + $\epsilon$. <br />
 
-This is done using multiple different regression techniques. Below is a table displaying the results of model. Models are assessed using RMSE and Rsquared of predicitons on randomly selected validation set. 
+This is done using multiple different regression techniques. Below is a table displaying the results of the different models. Models are assessed using RMSE and Rsquared of predicitons on randomly selected validation set. 
 
 ```{r, echo = F}
 readRDS("derived_graphs/RMSE.Table.rds")
@@ -84,3 +80,21 @@ readRDS("derived_graphs/rf.importance.table.rds")
 
 ![](derived_graphs/rf.plot.png)
 
+According to the plot above, the age of the player seems to be quite significant in predicting where they will get drafted. This is an unexpected results and should be analysed in future experiments. Height having the least importance is a reasonable result considering the wide range of players that get drafted. Running-backs are often quite short, but still are valuable players that get drafted early. On the other hand, lineman are often tall and can just as likely get drafted early. 
+
+Conclusion
+==========
+
+Results
+-------
+
+### Clustering
+According to the clustering analysis, we have established three groups of players that enter the NFL draft and participate in the combine: Skill, Strength, and Mixed. Intuitvely, this division makes perfect sense considering where players lineup on the field. The stronger players that perform better in strength events all lineup right on the line of scrimmage. Skill position players that are agile and quicker lineup as recievers or in the backfield. Mixed players do both, tight ends can lineup as a blocker or a receiver and must be both strong and skilled. These three clustering analyses justify the conclusion that there are three groups of players.
+
+### Modeling
+From the data used in this experiment, it does not seem reasonable to use this data to predict when a player will be selected in the nfl draft. The models built do not seem to have strong enough predicting power to make reasonable predictions.
+
+Future Work
+-----------
+
+Future work should include data about how players performed in college. Statistics reasonable for each position should be included as aggregates over college careers. Picks in the draft can be unpredicitable because different teams have different needs. Future work should include a "blueprint" statistics to explain what type of player each NFL team needs. This could be as simple an an explanatory eigenvector describing the team in a vectorized way. Quarterbacks were removed from this analysis becasue of lack of data, future research could include QBs and how their performance in the combine affects draft results. Many QBs do not attend the combine, future work could assess if this helps or hurts draft stock. 
