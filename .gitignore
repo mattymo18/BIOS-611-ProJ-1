@@ -6,3 +6,4 @@ Rplots.pdf*
 .gitconfig/*
 derived_graphs/*.png
 derived_models/*.rds
+derived_graphs/*.rds
