@@ -75,7 +75,10 @@ SSE.rf <- sum((predictions.rf - Split.DF$test$pick)^2)
 RMSE.rf <- sqrt(SSE.rf/nrow(Split.DF$test))
 RMSE.rf
 
+png(filename = "derived_graphs/rf.plot.png")
 varImpPlot(rf2)
+dev.off()
+
 importance(rf2)
 
 saveRDS(rf2, "derived_models/best.rf.mod.rds")

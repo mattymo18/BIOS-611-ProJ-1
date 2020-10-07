@@ -59,6 +59,7 @@ derived_models/best.gbm.mod.rds: derived_data/Clean_Data.csv\
  gbm_models.R
 	Rscript gbm_models.R
 	
+derived_graphs/rf.plot.png\
 derived_graphs/rf.importance.table.rds\
 derived_models/best.rf.mod.rds: derived_data/Clean_Data.csv\
  derived_data/Off.Skill.csv\
