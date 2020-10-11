@@ -1,0 +1,135 @@
+---
+title: "BIOS-611-HW4"
+author: "Matt Johnson"
+date: "10/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+Load in data
+------------
+```{r}
+DF <- read.csv("500_Person_Gender_Height_Weight_Index.csv")
+DF$Gender = ifelse(DF$Gender == "Male", 1, 0) #Male is 1, female is 0
+
+set.seed <- 18 #this is my lucky number 
+spec = c(train = .6, test = .2, validate = .2)
+DF1 = sample(cut(
+  seq(nrow(DF)), 
+  nrow(DF)*cumsum(c(0,spec)),
+  labels = names(spec)
+))
+
+DF.Split = split(DF, DF1)
+```
+
+Q1
+--
+```{r}
+glm1 <- glm(Gender ~ Height + Weight, data = DF.Split$train, family = "binomial")
+glm2 <- step(glm1, trace = 0)
+summary(glm1)
+summary(glm2)
+anova(glm2, glm1)
+
+DF.Split$test$glm1.probs <- predict(glm1, newdata = DF.Split$test, type = "response")
+DF.Split$test <- DF.Split$test %>% 
+  mutate(glm1_pred = 1*(glm1.probs > .5) + 0) %>% 
+  mutate(accurate.glm1 = 1*(glm1_pred == Gender))
+sum(DF.Split$test$accurate.glm1)/nrow(DF.Split$test)
+
+DF.Split$validate$glm1.probs <- predict(glm1, newdata = DF.Split$test, type = "response")
+DF.Split$validate <- DF.Split$validate %>% 
+  mutate(glm1_pred = 1*(glm1.probs > .5) + 0) %>% 
+  mutate(accurate.glm1 = 1*(glm1_pred == Gender))
+sum(DF.Split$validate$accurate.glm1)/nrow(DF.Split$validate)
+
+DF.Split$test$glm2.probs <- predict(glm2, newdata = DF.Split$test, type = "response")
+DF.Split$test <- DF.Split$test %>% 
+  mutate(glm2_pred = 1*(glm2.probs > .5) + 0) %>% 
+  mutate(accurate.glm2 = 1*(glm2_pred == Gender))
+sum(DF.Split$test$accurate.glm2)/nrow(DF.Split$test)
+```
+
+The Accuracy of the GLM Model with Height and Weight as Predictors is .55 on the validation set.  
+
+Q2
+--
+```{r}
+library(gbm)
+gbm1 <- gbm(Gender ~ Height + Weight, data = DF.Split$train, distribution = "bernoulli")
+
+DF.Split$test$gbm1.probs <- predict(gbm1, newdata = DF.Split$test, type = "response")
+DF.Split$test <- DF.Split$test %>% 
+  mutate(gbm1_pred = 1*(gbm1.probs > .5) + 0) %>% 
+  mutate(accurate.gbm1 = 1*(gbm1_pred == Gender))
+sum(DF.Split$test$accurate.gbm1)/nrow(DF.Split$test)
+
+DF.Split$validate$gbm1.probs <- predict(gbm1, newdata = DF.Split$validate, type = "response")
+DF.Split$validate <- DF.Split$validate %>% 
+  mutate(gbm1_pred = 1*(gbm1.probs > .5) + 0) %>% 
+  mutate(accurate.gbm1 = 1*(gbm1_pred == Gender))
+sum(DF.Split$validate$accurate.gbm1)/nrow(DF.Split$validate)
+```
+The Accuracy of the GBM Model with Height and Weight as Predictors is .52 on the validation set.  
+
+Q3
+--
+```{r}
+DF.Filtered.train <- DF.Split$train %>% 
+  filter(Gender == 1) %>% 
+  head(50)
+DF.Filtered.test <- DF.Split$test %>% 
+  filter(Gender == 1) %>% 
+  head(50)
+DF.Filtered.validate <- DF.Split$validate %>% 
+  filter(Gender == 1) %>% 
+  head(50)
+
+glm2 <- glm(Gender ~ Height + Weight, data = DF.Filtered.train, family = "binomial")
+
+DF.Filtered.test$glm2.probs <- predict(glm2, newdata = DF.Filtered.test, type = "response")
+DF.Filtered.test <- DF.Filtered.test %>% 
+  mutate(glm2_pred = 1*(glm2.probs > .5) + 0) %>% 
+  mutate(accurate.glm2 = 1*(glm2_pred == Gender))
+sum(DF.Filtered.test$accurate.glm2)/nrow(DF.Filtered.test)
+
+library(MLmetrics)
+
+```
+
+Q4
+--
+```{r}
+roc <- do.call(rbind, Map(function(threshold){
+    p <- DF.Split$validate$glm1.probs > threshold;
+    tp <- sum(p[DF.Split$validate$Gender])/sum(DF.Split$validate$Gender);
+    fp <- sum(p[!DF.Split$validate$Gender])/sum(!DF.Split$validate$Gender);
+    tibble(threshold=threshold,
+           tp=tp,
+           fp=fp)
+},seq(100)/100))
+
+ggplot(roc, aes(fp,tp)) + geom_line() + xlim(0,1) + ylim(0,1) +
+    labs(title="ROC Curve",x="False Positive Rate",y="True Positive Rate")
+```
+
+Not sure if this is correct because it was not for the previous model but this is ROC for best model. 
+
+Q5
+--
+```{r}
+library(Rtsne)
+cc <- kmeans(DF %>% select(Height, Weight), 2)
+fit1 <- Rtsne(DF %>% select(Height, Weight), dims=2, check_duplicates = F)
+g2 <- ggplot(fit1$Y %>% as.data.frame() %>% as_tibble() %>% mutate(label=cc$cluster),aes(V1,V2)) +
+  geom_point(aes(color=factor(label))) +
+  scale_color_discrete(name="Gender", labels = c("Male", "Female"))
+g2
+```
+
+There does seem to be two clusters, thought it is difficult to say with great confidence that there are, in fact, two distinct groups. More clutering methods, like Principle Component Analysis, should be considered to further asses the cluster. 
