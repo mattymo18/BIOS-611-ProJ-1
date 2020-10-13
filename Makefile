@@ -12,7 +12,10 @@ Analysis.pdf: Analysis.Rmd\
  derived_graphs/40.Time.Plot.png\
  derived_graphs/TSNE.Cluster.png\
  derived_graphs/K-Means.Cluster.png\
- derived_graphs/PCA.FramedClusters.png
+ derived_graphs/PCA.FramedClusters.png\
+ derived_graphs/RMSE.Table.rds\
+ derived_graphs/rf.importance.table.rds\
+ derived_graphs/rf.plot.png
 	R -e "rmarkdown::render('Analysis.Rmd')"
 
 derived_graphs/RMSE.Table.rds: derived_data/Clean_Data.csv\
@@ -21,6 +24,13 @@ derived_graphs/RMSE.Table.rds: derived_data/Clean_Data.csv\
  derived_data/Def.Skill.csv\
  derived_data/Def.Strength.csv\
  derived_data/Df.Mix.csv\
+ derived_models/best.gbm.mod.rds\
+ derived_models/best.ridge.mod.rds\
+ derived_models/best.lasso.mod.rds\
+ derived_models/best.lin.mod.rds\
+ derived_models/best.glm.mod.rds\
+ derived_models/best.rf.mod.rds\
+ derived_models/best.pcr.mod.rds\
  model.eval.table.R
 	Rscript model.eval.table.R
 
