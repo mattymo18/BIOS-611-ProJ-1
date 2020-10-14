@@ -1,9 +1,11 @@
 .PHONY: clean
 
 clean:
-	rm derived_data/*
-	rm derived_graphs/*
-	rm derived_models/*
+	rm derived_data/*.csv
+	rm derived_graphs/*.png
+	rm derived_graphs/*.rds
+	rm derived_models/*.rds
+	rm Analysis.pdf
 	
 Analysis.pdf: Analysis.Rmd\
  derived_graphs/Boxplot.by.round.png\
