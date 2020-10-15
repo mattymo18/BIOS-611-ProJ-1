@@ -2,7 +2,7 @@
 title: "BIOS-611-HW4"
 author: "Matt Johnson"
 date: "10/11/2020"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -42,20 +42,14 @@ DF.Split$test <- DF.Split$test %>%
   mutate(accurate.glm1 = 1*(glm1_pred == Gender))
 sum(DF.Split$test$accurate.glm1)/nrow(DF.Split$test)
 
-DF.Split$validate$glm1.probs <- predict(glm1, newdata = DF.Split$test, type = "response")
+DF.Split$validate$glm1.probs <- predict(glm1, newdata = DF.Split$validate, type = "response")
 DF.Split$validate <- DF.Split$validate %>% 
   mutate(glm1_pred = 1*(glm1.probs > .5) + 0) %>% 
   mutate(accurate.glm1 = 1*(glm1_pred == Gender))
 sum(DF.Split$validate$accurate.glm1)/nrow(DF.Split$validate)
-
-DF.Split$test$glm2.probs <- predict(glm2, newdata = DF.Split$test, type = "response")
-DF.Split$test <- DF.Split$test %>% 
-  mutate(glm2_pred = 1*(glm2.probs > .5) + 0) %>% 
-  mutate(accurate.glm2 = 1*(glm2_pred == Gender))
-sum(DF.Split$test$accurate.glm2)/nrow(DF.Split$test)
 ```
 
-The Accuracy of the GLM Model with Height and Weight as Predictors is .56 on the validation set.  
+The Accuracy of the GLM Model with Height and Weight as Predictors is about .5 on the validation set.  
 
 Q2
 --
@@ -75,7 +69,7 @@ DF.Split$validate <- DF.Split$validate %>%
   mutate(accurate.gbm1 = 1*(gbm1_pred == Gender))
 sum(DF.Split$validate$accurate.gbm1)/nrow(DF.Split$validate)
 ```
-The Accuracy of the GBM Model with Height and Weight as Predictors is .55 on the validation set.  
+The Accuracy of the GBM Model with Height and Weight as Predictors is .5 on the validation set.  
 
 Q3
 --
