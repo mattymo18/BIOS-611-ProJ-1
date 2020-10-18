@@ -137,6 +137,7 @@ Graph4 <- DF.clean %>%
   filter(position != "QB" & position != "LS") %>% 
   ggplot(aes(x=position, y=round, color = position)) +     
   geom_boxplot() +
+  geom_jitter(alpha = .35) +
   xlab("Position") +
   ylab("Pick") + 
   theme(legend.position = "none")
