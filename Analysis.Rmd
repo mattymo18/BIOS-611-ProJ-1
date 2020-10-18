@@ -72,7 +72,7 @@ This is done using multiple different regression techniques. Below is a table di
 readRDS("derived_graphs/RMSE.Table.rds")
 ```
 
-According to the table, the random forest model seemed to perfrom the best on the out of sample validation set. The importance of each variable in the random forest model is detailed below. 
+According to the table, the random forest model seemed to perform the best on the out of sample validation set. The importance of each variable in the random forest model is detailed below. 
 
 ```{r, echo = F}
 readRDS("derived_graphs/rf.importance.table.rds")
@@ -80,7 +80,7 @@ readRDS("derived_graphs/rf.importance.table.rds")
 
 ### Variance Importance Plot
 ![](derived_graphs/rf.plot.png)
-According to the plot above, the age of the player seems to be quite significant in predicting where they will get drafted. This is an unexpected results and should be analysed in future experiments. Height having the least importance is a reasonable result considering the wide range of players that get drafted. Running-backs are often quite short, but still are valuable players that get drafted early. On the other hand, lineman are often tall and can just as likely get drafted early. 
+According to the plot above, the age of the player seems to be quite significant in predicting when they will get drafted. This is an unexpected results and should be analysed in future experiments. Height having the least importance is a reasonable result considering the wide range of players that get drafted. Running-backs are often quite short, but still are valuable players that get drafted early. On the other hand, lineman are often tall and can just as likely get drafted early. 
 
 Conclusion
 ==========
@@ -89,9 +89,11 @@ Conclusion
 According to the clustering analysis, we have established three groups of players that enter the NFL draft and participate in the combine: Skill, Strength, and Mixed. Intuitvely, this division makes perfect sense considering where players lineup on the field. The stronger players that perform better in strength events all lineup right on the line of scrimmage. Skill position players that are agile and quicker lineup as recievers or in the backfield. Mixed players do both, tight ends can lineup as a blocker or a receiver and must be both strong and skilled. These three clustering analyses justify the conclusion that there are three groups of players.
 
 #### Modeling
-From the data used in this experiment, it does not seem reasonable to use this data to predict when a player will be selected in the nfl draft. The models built do not seem to have strong enough predicting power to make reasonable predictions.
+From the data used in this experiment, it does not seem reasonable to predict when a player will be selected in the nfl draft. The models built do not seem to have strong enough predicting power to make reasonable predictions.
 
 Future Work
 -----------
 
-Future work should include data about how players performed in college. Statistics reasonable for each position should be included as aggregates over college careers. Picks in the draft can be unpredicitable because different teams have different needs. Future work should include a "blueprint" statistics to explain what type of player each NFL team needs. This could be as simple an an explanatory eigenvector describing the team in a vectorized way. Quarterbacks were removed from this analysis becasue of lack of data, future research could include QBs and how their performance in the combine affects draft results. Many QBs do not attend the combine, future work could assess if this helps or hurts draft stock. 
+1. Future work should include data about how players performed in college. Statistics reasonable for each position should be included as aggregates over college careers. 
+2. Picks in the draft can be unpredicitable because different teams have different needs. Future work should include a "blueprint" statistics to explain what type of player each NFL team needs. This could be as simple an an explanatory eigenvector describing the team in a vectorized way. 
+3. Quarterbacks were removed from this analysis becasue of lack of data, future research could include QBs and how their performance in the combine affects draft results. Many QBs do not attend the combine, future work could assess if this helps or hurts draft stock. 
