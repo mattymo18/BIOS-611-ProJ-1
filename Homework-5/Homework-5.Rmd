@@ -11,6 +11,7 @@ library(tidyverse)
 library(gbm)
 library(cluster)
 library(ggfortify)
+library(caret)
 ```
 
 Q1
@@ -126,3 +127,35 @@ Q4
 ==
 Done in Home-work-5.ipynb
 
+Q5
+==
+```{r}
+DF2.no.neut$Alignment.bin <- ifelse(DF2.no.neut$Alignment == "good", 1, 0) #Good = 1, bad = 0
+
+trainIndex <- createDataPartition(y = DF2.no.neut$Alignment.bin, p = .8, times = 1, list = F)
+DF2.no.neut$Alignment.bin <- factor(DF2.no.neut$Alignment.bin)
+train_ctrl <- trainControl(method = "repeatedcv", number = 50)
+gbm2 <- train(Alignment.bin ~ Intelligence +
+                Strength +
+                Speed +
+                Durability +
+                Power +
+                Combat +
+                Total, data = DF2.no.neut %>% slice(trainIndex), 
+              method = "gbm", 
+              trControl = train_ctrl, 
+              verbose = F)
+# summary(gbm2)
+gbm2
+```
+The Final Values used for the model are shown in the output above. 
+
+Q6
+==
+
+Using things such as K-fold cross validation leads to a much more complete analysis. By taking many different samples and testing each individual we are able see how the model performs regardless of the sample taken. If we simply take one single sample we will not see the entire picture. We will only see how the model performs on that very specific set. Using CV better shows how the model will perform on data that is not in the training set, which in the end is the point of modeling. 
+
+Q7
+==
+
+RFE works by starting with a full model and removes the least imporant features through fitting and refitting. RFE fits and test the full model and removes the feature that is the least important. It will then refit the model without this feature and test to remove another feature. The algorithm will continue like this until it finds the features that are most important. 
