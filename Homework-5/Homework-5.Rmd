@@ -2,7 +2,7 @@
 title: "Homework 5"
 author: "Matt Johnson"
 date: "10/23/2020"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -61,17 +61,22 @@ DF2 <- read_csv("https://raw.githubusercontent.com/Vincent-Toups/bios611-project
 
 #### Q2-1
 ```{r}
-summary(DF2) #nothing seems to out of the ordinary right here, lets make a couple plots
+summary(DF2) 
+#nothing seems to out of the ordinary right 
+#here, lets make a couple plots
 
 DF2 %>% 
   ggplot(aes(x = Alignment)) +
-  geom_bar() #there are a lot of goods and not too many neutrals. Also seems to be a couple NAs, before modeling we should remove the NAs
+  geom_bar() 
+#there are a lot of goods and not too many neutrals. 
+#Also seems to be a couple NAs, before modeling we should remove the NAs
 
 DF2 <- na.omit(DF2)
 
 #lets take a look at how many nuetrals there are
 nrow(DF2 %>% filter(Alignment == "neutral"))
-#since there are only 11 neutrals and we are mostly concerned with good vs bad lets just take these neutral people out
+#since there are only 11 neutrals and we are mostly 
+#concerned with good vs bad lets just take these neutral people out
 
 DF2.no.neut <- DF2 %>% 
   filter(Alignment != "neutral")
@@ -79,16 +84,24 @@ DF2.no.neut <- DF2 %>%
 #lets check for some outliers here too
 DF2.no.neut %>% 
   ggplot(aes(x = Intelligence)) +
-  geom_bar(aes(color = Alignment), position = "dodge") #nothing really irregular here, seems like bad people are a bit more inteligent though which is interesting
-#checked similar plots with all other qualities and did not find anything too out of the ordinary
+  geom_bar(aes(color = Alignment), position = "dodge") 
+#nothing really irregular here, seems like bad people 
+#are a bit more inteligent though which is interesting
+
+#checked similar plots with all other qualities 
+#and did not find anything too out of the ordinary
 ```
 I guess just taking out the 11 neutrals is all I am going to do in this section. This seems reasonable becasue there are not many of them and a person identified as "neutral" is not very interesting for the analysis. 
 
 #### Q2-2
 ```{r}
 pca <- prcomp(DF2.no.neut[, -c(1, 2)])
-summary(pca) #we would just need the primary principle component since it accounts for 95% of the variance
-round(pca$rot[,1],2) #how the 1st principle component is made up...seems to be mostly made of the total column
+summary(pca) 
+#we would just need the primary principle component 
+#since it accounts for 95% of the variance
+round(pca$rot[,1],2) 
+#how the 1st principle component is made up...
+#seems to be mostly made of the total column
 ```
 
 #### Q2-3
