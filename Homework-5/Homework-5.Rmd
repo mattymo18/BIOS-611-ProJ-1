@@ -95,7 +95,7 @@ round(pca$rot[,1],2) #how the 1st principle component is made up...seems to be m
 Since the columns we are interested in, the numerical ones exept total, are already on the same scale from 0-100 we should not need to normalize anything here. We could normalize everything if we wanted to include the total column, but we see above that we should probably not include this column.
 
 #### Q2-4
-```{r, echo=F}
+```{r, eval = F}
 Total.Test = rowSums(DF2.no.neut[, -c(1, 2, 9)])
 DF2.no.neut$Total == Total.Test #seems like this is true
 ```
@@ -118,8 +118,6 @@ DF.TSNE %>%
   ggplot(aes(x = X1, y = X2)) +
   geom_point(aes(color = cluster))
 ```
-
-Done in Homework-5.ipynb
 
 Insights, seems like there might be two groups, we should do a pca to really check. There is a bit of overlap, but it looks like there could be two groups with some outliers (Small men, big women).
 
