@@ -7,3 +7,6 @@ derived_data/*.csv
 derived_graphs/*.png
 derived_graphs/*rds
 derived_models/*rds
+.cache/
+.ipython/
+.jupyter/

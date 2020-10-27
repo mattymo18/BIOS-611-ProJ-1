@@ -160,3 +160,4 @@ g13 <- Skill.Stren.DF %>%
   scale_color_discrete(name="Type", labels = c("Skill", "Strength", "Mixed"))
 
 ggsave("derived_graphs/40.Time.Plot.png")
+
