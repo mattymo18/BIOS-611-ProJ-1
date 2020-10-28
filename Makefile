@@ -1,4 +1,5 @@
 .PHONY: clean
+.PHONY: NFL_Combine_Tool
 
 #cleans entire repository of derived elements
 clean:
@@ -7,6 +8,16 @@ clean:
 	rm derived_graphs/*.rds
 	rm derived_models/*.rds
 	rm Analysis.pdf
+	
+NFL_Combine_Tool:\
+ derived_data/Off.Skill.csv\
+ derived_data/Off.Strength.csv\
+ derived_data/Def.Skill.csv\
+ derived_data/Def.Strength.csv\
+ derived_data/DF.Mix.csv\
+ derived_data/combine.csv\
+ NFL_Combine_Tool.R
+	Rscript NFL_Combine_Tool.R ${PORT}
 
 #builds final report	
 Analysis.pdf: Analysis.Rmd\

@@ -4,6 +4,10 @@ library(shinythemes)
 library(tidyverse)
 library(plotly)
 
+
+args <- commandArgs(trailingOnly = T)
+port <- as.numeric(args[[1]])
+
 DF.Off.skill <- read.csv("derived_data/Off.Skill.csv") %>% 
   mutate(Type = "1") #skill is 1, strength is 2, linebacker is 3
 DF.Off.strength <- read.csv("derived_data/Off.Strength.csv") %>% 
@@ -45,7 +49,14 @@ ui <-  fluidPage(theme = shinytheme("yeti"),
                                                    selected = "Forty Yard Dash")), 
                                      mainPanel(
                                        plotlyOutput("Density.Plots"),
-                                       tableOutput("Combine.Stat.Table")
+                                       fluidRow(
+                                         column(width = 5, h3("Top 5")), 
+                                         column(width = 5, h3("Bottom 5"))
+                                       ),
+                                       fluidRow(
+                                         column(width = 5, tableOutput("Combine.Stat.Top5.Table")),
+                                       column(width = 5, tableOutput("Combine.Stat.Bot5.Table"))
+                                     )
                                      )
                                    )
                           ), 
@@ -97,7 +108,7 @@ server <- function(input, output) {
   })
   
   ##### Reactive Table Function #######
-  Combine.Stat.func <- reactive({
+  Combine.Stat.Top5.func <- reactive({
    if(input$Variable.Select.Density.Plots == "Bench Press" | 
       input$Variable.Select.Density.Plots == "Vertical Jump" |
       input$Variable.Select.Density.Plots == "Broad Jump") {
@@ -115,9 +126,34 @@ server <- function(input, output) {
    }
   })
   
+  Combine.Stat.Bot5.func <- reactive({
+    if(input$Variable.Select.Density.Plots == "Bench Press" | 
+       input$Variable.Select.Density.Plots == "Vertical Jump" |
+       input$Variable.Select.Density.Plots == "Broad Jump") {
+      Skill.Stren.DF %>% 
+        rename(`Name` = nameFull) %>% 
+        select(Name, !!sym(input$Variable.Select.Density.Plots)) %>% 
+        arrange(desc(!!sym(input$Variable.Select.Density.Plots))) %>% 
+        tail(5) %>% 
+        arrange(!!sym(input$Variable.Select.Density.Plots))
+    } else {
+      Skill.Stren.DF %>% 
+        rename(`Name` = nameFull) %>% 
+        select(Name, !!sym(input$Variable.Select.Density.Plots)) %>% 
+        arrange(!!sym(input$Variable.Select.Density.Plots)) %>% 
+        tail(5) %>% 
+        arrange(desc(!!sym(input$Variable.Select.Density.Plots)))
+    }
+  })
+  
+  
   ##### Density Page Table #####
-  output$Combine.Stat.Table <- renderTable(
-    Combine.Stat.func()
+  output$Combine.Stat.Top5.Table <- renderTable(
+    Combine.Stat.Top5.func()
+  )
+  
+  output$Combine.Stat.Bot5.Table <- renderTable(
+    Combine.Stat.Bot5.func()
   )
   
   
@@ -146,5 +182,7 @@ server <- function(input, output) {
 
 
 # Run the application 
-shinyApp(ui = ui, server = server)
+shinyApp(ui = ui, server = server, options = list(port=port,
+                                                  host="0.0.0.0")) 
+
 
