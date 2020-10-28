@@ -35,6 +35,7 @@ In local project directory, to build artifact named Raleigh.Clean.csv:
     > make derived_data/combine.csv
     
 Use artifacts before colon as make targets. Dependencies are listed after colon. 
+
 PROPOSAL
 --------
 
