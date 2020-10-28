@@ -10,3 +10,4 @@ derived_models/*rds
 .cache/
 .ipython/
 .jupyter/
+.bash_history
