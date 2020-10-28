@@ -19,11 +19,12 @@ Then connect to the machine on port 8787.
 #### Rshiny Application
 To run the application use:
 
-    > docker run -v `pwd`:/home/rstudio -e PASSWORD=mypass -p 8787:8787 -p 8788:8788 -t project-env
+    > docker run -v `pwd`:/home/rstudio -e PASSWORD=mypass -p 8787:8787 -p 8788:8788 -t project-env 
     
-Then use:
+Then in the rstudio server on port 8787 go to the terminal and use:
 
     > PORT=8788 make NFL_Combine_Tool
+    
 If you want to run the shiny app on another port, replace 8788 above (in all places) with the appropriate port.
 
 #### Make
