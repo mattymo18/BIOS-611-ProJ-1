@@ -17,7 +17,7 @@ This Docker container is based on rocker/verse. To run rstudio server:
 Then connect to the machine on port 8787.
 
 ### Rshiny Application
-Top run the application use:
+To run the application use:
 
     > docker run -v `pwd`:/home/rstudio -e PASSWORD=mypass -p 8787:8787 -p 8788:8788 -t project-env
     
