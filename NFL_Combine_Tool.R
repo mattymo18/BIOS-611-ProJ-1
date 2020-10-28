@@ -25,6 +25,9 @@ Skill.Stren.DF <- Skill.Stren.DF %>%
          `Pick` = pick, 
          `Round` = round) %>% 
   mutate(Type.Name = ifelse(Type == 1, "Skill", ifelse(Type == 2, "Strength", "Mixed")))
+Player.Names <- read.csv("derived_data/combine.csv") %>% 
+  select(playerId, nameFull)
+Skill.Stren.DF <- right_join(Player.Names, Skill.Stren.DF)
 
 ########## UI ##########
 ui <-  fluidPage(theme = shinytheme("yeti"),
@@ -41,7 +44,8 @@ ui <-  fluidPage(theme = shinytheme("yeti"),
                                                                "Broad Jump"), 
                                                    selected = "Forty Yard Dash")), 
                                      mainPanel(
-                                       plotlyOutput("Density.Plots")
+                                       plotlyOutput("Density.Plots"),
+                                       tableOutput("Combine.Stat.Table")
                                      )
                                    )
                           ), 
@@ -92,6 +96,34 @@ server <- function(input, output) {
             legend.title = element_blank()))
   })
   
+  ##### Reactive Table Function #######
+  Combine.Stat.func <- reactive({
+   if(input$Variable.Select.Density.Plots == "Bench Press" | 
+      input$Variable.Select.Density.Plots == "Vertical Jump" |
+      input$Variable.Select.Density.Plots == "Broad Jump") {
+     Skill.Stren.DF %>% 
+      rename(`Name` = nameFull) %>% 
+      select(Name, !!sym(input$Variable.Select.Density.Plots)) %>% 
+      arrange(desc(!!sym(input$Variable.Select.Density.Plots))) %>% 
+      head(5)
+   } else {
+     Skill.Stren.DF %>% 
+       rename(`Name` = nameFull) %>% 
+       select(Name, !!sym(input$Variable.Select.Density.Plots)) %>% 
+       arrange(!!sym(input$Variable.Select.Density.Plots)) %>% 
+       head(5)
+   }
+  })
+  
+  ##### Density Page Table #####
+  output$Combine.Stat.Table <- renderTable(
+    Combine.Stat.func()
+  )
+  
+  
+  
+  
+  ##### Scatter Plots #####
   output$Scatter.Plots <- renderPlotly({
     
     xvar <- input$X.Variable.Select.Scatter
