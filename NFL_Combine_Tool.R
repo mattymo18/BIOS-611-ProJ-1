@@ -5,8 +5,8 @@ library(tidyverse)
 library(plotly)
 
 
-# args <- commandArgs(trailingOnly = T)
-# port <- as.numeric(args[[1]])
+args <- commandArgs(trailingOnly = T)
+port <- as.numeric(args[[1]])
 
 DF.Off.skill <- read.csv("derived_data/Off.Skill.csv") %>% 
   mutate(Type = "1") #skill is 1, strength is 2, linebacker is 3
@@ -55,8 +55,8 @@ ui <-  fluidPage(theme = shinytheme("yeti"),
                                          column(width = 5, h3("Bottom 5"))
                                        ),
                                        fluidRow(
-                                         column(width = 5, tableOutput("Combine.Stat.Top5.Table")),
-                                       column(width = 5, tableOutput("Combine.Stat.Bot5.Table"))
+                                         column(width = 6, tableOutput("Combine.Stat.Top5.Table")),
+                                       column(width = 6, tableOutput("Combine.Stat.Bot5.Table"))
                                      )
                                      )
                                    )
@@ -68,10 +68,17 @@ ui <-  fluidPage(theme = shinytheme("yeti"),
                                                    choices = Choices, 
                                                    selected = "Forty Yard Dash"), 
                                        selectInput("Y.Variable.Select.Scatter", h3("Select Y Variable"), 
-                                                   choices = "", 
-                                                   selected = "Bench Press")), 
+                                                   choices = "")), 
                                      mainPanel(
-                                       plotlyOutput("Scatter.Plots")
+                                       plotlyOutput("Scatter.Plots"), 
+                                       fluidRow(
+                                         column(width = 5, h3("Top 5")), 
+                                         column(width = 5, h3("Bottom 5"))
+                                       ),
+                                       fluidRow(
+                                         column(width = 6, tableOutput("Combine.Stat.Top5.Table.Scatter")),
+                                         column(width = 6, tableOutput("Combine.Stat.Bot5.Table.Scatter"))
+                                       )
                                      )
                                    ))
                )
@@ -148,22 +155,22 @@ server <- function(input, output, session) {
   )
   
   
-  
+  observe({
+    xvar = input$X.Variable.Select.Scatter
+    updateSelectInput(session, "Y.Variable.Select.Scatter", choices = Choices[-which(Choices == input$X.Variable.Select.Scatter)])
+  }) 
   
   ##### Scatter Plots #####
   output$Scatter.Plots <- renderPlotly({
     
     xvar <- input$X.Variable.Select.Scatter
-    observe({
-      xvar = input$X.Variable.Select.Scatter
-      updateSelectInput(session, "Y.Variable.Select.Scatter", choices = Choices[-which(Choices == input$X.Variable.Select.Scatter)])
-    })
-    yvar <- input$Y.Variable.Select.Scatter
+   yvar <- input$Y.Variable.Select.Scatter
    
   ggplotly(
      Skill.Stren.DF %>% 
       ggplot(aes(x = !!sym(xvar), y = !!sym(yvar))) +
       geom_point(aes(color = Type.Name), alpha = .5) +
+      geom_smooth(method = loess, color = "black", linetype = "dotted", size = .5) +
       theme(axis.line = element_line(colour = "black"),
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
@@ -173,12 +180,57 @@ server <- function(input, output, session) {
     
   })
   
+
+Combine.Stat.Top5.scat.func <- reactive({
+  if(input$X.Variable.Select.Scatter == "Bench Press" | 
+     input$X.Variable.Select.Scatter == "Vertical Jump" |
+     input$X.Variable.Select.Scatter == "Broad Jump") {
+    Skill.Stren.DF %>% 
+      rename(`Name` = nameFull) %>% 
+      select(Name, !!sym(input$X.Variable.Select.Scatter), !!sym(input$Y.Variable.Select.Scatter)) %>% 
+      arrange(desc(!!sym(input$X.Variable.Select.Scatter))) %>% 
+      head(5)
+  } else {
+    Skill.Stren.DF %>% 
+      rename(`Name` = nameFull) %>% 
+      select(Name, !!sym(input$Variable.Select.Density.Plots), !!sym(input$Y.Variable.Select.Scatter)) %>% 
+      arrange(!!sym(input$Variable.Select.Density.Plots)) %>% 
+      head(5)
+  }
+})
+
+Combine.Stat.Bot5.scat.func <- reactive({
+  if(input$Variable.Select.Density.Plots == "Bench Press" | 
+     input$Variable.Select.Density.Plots == "Vertical Jump" |
+     input$Variable.Select.Density.Plots == "Broad Jump") {
+    Skill.Stren.DF %>% 
+      rename(`Name` = nameFull) %>% 
+      select(Name, !!sym(input$Variable.Select.Density.Plots), !!sym(input$Y.Variable.Select.Scatter)) %>% 
+      arrange(desc(!!sym(input$Variable.Select.Density.Plots))) %>% 
+      tail(5) %>% 
+      arrange(!!sym(input$Variable.Select.Density.Plots))
+  } else {
+    Skill.Stren.DF %>% 
+      rename(`Name` = nameFull) %>% 
+      select(Name, !!sym(input$Variable.Select.Density.Plots), !!sym(input$Y.Variable.Select.Scatter)) %>% 
+      arrange(!!sym(input$Variable.Select.Density.Plots)) %>% 
+      tail(5) %>% 
+      arrange(desc(!!sym(input$Variable.Select.Density.Plots)))
+  }
+})
+
+output$Combine.Stat.Top5.Table.Scatter <- renderTable(
+  Combine.Stat.Top5.scat.func()
+)
+
+output$Combine.Stat.Bot5.Table.Scatter <- renderTable(
+  Combine.Stat.Bot5.scat.func()
+)
 }
 
-
 # Run the application 
-shinyApp(ui = ui, server = server#, options = list(port=port,
-                                                  #host="0.0.0.0")
+shinyApp(ui = ui, server = server, options = list(port=port,
+                                                  host="0.0.0.0")
          ) 
 
 
