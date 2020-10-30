@@ -5,8 +5,8 @@ library(tidyverse)
 library(plotly)
 
 
-args <- commandArgs(trailingOnly = T)
-port <- as.numeric(args[[1]])
+# args <- commandArgs(trailingOnly = T)
+# port <- as.numeric(args[[1]])
 
 DF.Off.skill <- read.csv("derived_data/Off.Skill.csv") %>% 
   mutate(Type = "1") #skill is 1, strength is 2, linebacker is 3
@@ -32,6 +32,12 @@ Skill.Stren.DF <- Skill.Stren.DF %>%
 Player.Names <- read.csv("derived_data/combine.csv") %>% 
   select(playerId, nameFull)
 Skill.Stren.DF <- right_join(Player.Names, Skill.Stren.DF)
+Choices <- c("Forty Yard Dash", 
+             "Bench Press",
+             "Shuttle Run", 
+             "Three Cone Drill", 
+             "Vertical Jump", 
+             "Broad Jump")
 
 ########## UI ##########
 ui <-  fluidPage(theme = shinytheme("yeti"),
@@ -40,12 +46,7 @@ ui <-  fluidPage(theme = shinytheme("yeti"),
                                    sidebarLayout(
                                      sidebarPanel(
                                        selectInput("Variable.Select.Density.Plots", h3("Combine Stat"), 
-                                                   choices = c("Forty Yard Dash", 
-                                                               "Bench Press",
-                                                               "Shuttle Run", 
-                                                               "Three Cone Drill", 
-                                                               "Vertical Jump", 
-                                                               "Broad Jump"), 
+                                                   choices = Choices, 
                                                    selected = "Forty Yard Dash")), 
                                      mainPanel(
                                        plotlyOutput("Density.Plots"),
@@ -64,21 +65,11 @@ ui <-  fluidPage(theme = shinytheme("yeti"),
                                    sidebarLayout(
                                      sidebarPanel(
                                        selectInput("X.Variable.Select.Scatter", h3("Select X Variable"), 
-                                                   choices = c("Forty Yard Dash", 
-                                                               "Bench Press", 
-                                                               "Shuttle Run", 
-                                                               "Three Cone Drill", 
-                                                               "Vertical Jump", 
-                                                               "Broad Jump"), 
+                                                   choices = Choices, 
                                                    selected = "Forty Yard Dash"), 
                                        selectInput("Y.Variable.Select.Scatter", h3("Select Y Variable"), 
-                                                   choices = c("Forty Yard Dash", 
-                                                               "Bench Press", 
-                                                               "Shuttle Run", 
-                                                               "Three Cone Drill", 
-                                                               "Vertical Jump", 
-                                                               "Broad Jump"), 
-                                                   selected = "Forty Yard Dash")), 
+                                                   choices = "", 
+                                                   selected = "Bench Press")), 
                                      mainPanel(
                                        plotlyOutput("Scatter.Plots")
                                      )
@@ -87,7 +78,7 @@ ui <-  fluidPage(theme = shinytheme("yeti"),
 )
 
 ########## Server ##########
-server <- function(input, output) {
+server <- function(input, output, session) {
   ###### Density Plots ###### 
   
   output$Density.Plots <- renderPlotly({
@@ -163,6 +154,10 @@ server <- function(input, output) {
   output$Scatter.Plots <- renderPlotly({
     
     xvar <- input$X.Variable.Select.Scatter
+    observe({
+      xvar = input$X.Variable.Select.Scatter
+      updateSelectInput(session, "Y.Variable.Select.Scatter", choices = Choices[-which(Choices == input$X.Variable.Select.Scatter)])
+    })
     yvar <- input$Y.Variable.Select.Scatter
    
   ggplotly(
@@ -182,7 +177,8 @@ server <- function(input, output) {
 
 
 # Run the application 
-shinyApp(ui = ui, server = server, options = list(port=port,
-                                                  host="0.0.0.0")) 
+shinyApp(ui = ui, server = server#, options = list(port=port,
+                                                  #host="0.0.0.0")
+         ) 
 
 
