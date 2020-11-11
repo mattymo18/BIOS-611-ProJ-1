@@ -157,7 +157,8 @@ ggsave("derived_graphs/Pick.Density.Plot.png", plot = g12)
 g13 <- Skill.Stren.DF %>% 
   ggplot(aes(x=Type, y=combine40yd, color = Type)) +
   geom_boxplot() +
-  scale_color_discrete(name="Type", labels = c("Skill", "Strength", "Mixed"))
+  scale_color_discrete(name="Type", labels = c("Skill", "Strength", "Mixed")) +
+  ylab("40 Yard Dash")
 
 ggsave("derived_graphs/40.Time.Plot.png")
 

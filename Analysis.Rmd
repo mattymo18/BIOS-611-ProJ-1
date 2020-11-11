@@ -37,7 +37,7 @@ The following plots contain summary information for the data set.
 ![](derived_graphs/Boxplot.by.round.png)
 ![](derived_graphs/Off.Weights.png)
 ![](derived_graphs/Age.Dist.png)
-![](derived_graphs/40.Time.Plot.png)
+![](derived_graphs/)
 
 Methodology
 ===========
