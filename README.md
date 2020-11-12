@@ -32,7 +32,7 @@ If you want to run the shiny app on another port, replace 8788 above (in all pla
 To run Jupyter Notebook use:
 
     > docker run -p 8765:8765 -v `pwd`:/home/rstudio -e PASSWORD=mypass\
-    -it project-env sudo -H -u rstudio/bin/bash -c "cd ~/; jupyter lab --ip 0.0.0.0 --port 8765"
+    -it project-env sudo -h -u rstudio/bin/bash -c "cd ~/; jupyter lab --ip 0.0.0.0 --port 8765"
     
 Then connect machine on port 8765.
 
