@@ -24,7 +24,17 @@ Then in the rstudio server on port 8787 go to the terminal and use:
 
     > PORT=8788 make NFL_Combine_Tool
     
+Then connect machine on port 8788.
+    
 If you want to run the shiny app on another port, replace 8788 above (in all places) with the appropriate port.
+
+#### Jupyter Notebook
+To run Jupyter Notebook use:
+
+    > docker run -p 8765:8765 -v `pwd`:/home/rstudio -e \PASSWORD=mypass\
+    -it project-env sudo -H -u rstudio/bin/bash -c "cd ~/; jupyter lab --ip 0.0.0.0 --port 8765
+    
+Then connect machine on port 8765.
 
 #### Make
 Use Makefile as recipe book for building artifacts found in derivded directories. 
