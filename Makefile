@@ -1,5 +1,6 @@
 .PHONY: clean
 .PHONY: NFL_Combine_Tool
+.PHONY: NFL_Python_Tool
 
 #cleans entire repository of derived elements
 clean:
@@ -9,6 +10,14 @@ clean:
 	rm derived_models/*.rds
 	rm Analysis.pdf
 	
+NFL_Python_Tool:\
+ derived_data/Off.Skill.csv\
+ derived_data/Off.Strength.csv\
+ derived_data/Def.Skill.csv\
+ derived_data/Def.Strength.csv\
+ derived_data/DF.Mix.csv\
+ bokeh serve --port ${PORT} --address 0.0.0.0 NFL_Python_Aspect.ipynb
+
 NFL_Combine_Tool:\
  derived_data/Off.Skill.csv\
  derived_data/Off.Strength.csv\
