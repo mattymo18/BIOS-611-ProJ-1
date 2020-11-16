@@ -41,7 +41,7 @@ Use Makefile as recipe book for building artifacts found in derivded directories
 ##### Example:
 In local project directory, to build artifact named Raleigh.Clean.csv:
 
-    > make derived_data/combine.csv
+    > make derived_data/Analysis.pdf
     
 Use artifacts before colon as make targets. Dependencies are listed after colon. 
 
