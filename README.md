@@ -35,9 +35,13 @@ To run Jupyter Notebook use:
     
 Then connect machine on port 8765.
 
-##### To Run NFL_Tool.py use:
+##### To Run NFL_Tool.py go to terminal in Jupyter notebook and use:
 
     > PORT=8718 make NFL_Python_Tool
+    
+Then connect machine on port 8718.
+
+If you want to run the shiny app on another port, replace 8788 above (in all places) with the appropriate port.
 
 #### Make
 Use Makefile as recipe book for building artifacts found in derivded directories. 
