@@ -38,15 +38,15 @@ DF_Clean = DF_Def_Skill_cle.append([DF_Def_Stren_cle, DF_Off_Skill_cle, DF_Off_S
 
 TOOLS="pan,wheel_zoom,box_select,lasso_select,reset";
 
-hist, edges = np.histogram(DF_Clean['combine40yd'], density=True, bins=bins)
+hist, edges = np.histogram(DF_Clean['combine40yd'], density=True, bins=bins);
 
 hist_df = pd.DataFrame({column: hist,
                         "left": edges[:-1],
-                        "right": edges[1:]})
+                        "right": edges[1:]});
 
 hist_df["interval"] = ["%d to %d" % (left, right) for left, 
-                        right in zip(hist_df["left"], hist_df["right"])]
-src = ColumnDataSource(hist_df)
+                        right in zip(hist_df["left"], hist_df["right"])];
+src = ColumnDataSource(hist_df);
 
 
 #forty yard dash plot
@@ -59,7 +59,7 @@ forty_plot = bk.figure(tools = TOOLS,
 forty_plot.quad(top=column, bottom = 0, left="left", right="right", source = src);
 
 #widgets
-bins = Slider(title = "Number of Bins", value = 50, start = 1, end = 100, step = 1)
+bins = Slider(title = "Number of Bins", value = 50, start = 1, end = 100, step = 1);
 
 #set up callbacks
 def update_data(attrname, old, new):
@@ -72,20 +72,16 @@ def update_data(attrname, old, new):
     hist_df = pd.DataFrame({column: hist,
                         "left": edges[:-1],
                         "right": edges[1:]})
-    src.data = ColumnDataSource(hist_df)
+    src.data = ColumnDataSource(hist_df);
     
-for w in [bins]:
-    w.callback_policy = 'mouseup'
-    w.on_change('value', update_data)
+bins.callback_policy = 'mouseup'
+bins.on_change('value', update_data);
 
 
 #set up layout and add to document
-inputs = column(bins)
-
-curdoc().add_root(row(inputs, forty_plot, width=800))
-curdoc().title = "Sliders"
+inputs = column(bins);
 
 
-#output_file(test.html);
-
-#show(forty_plot);
+doc = curdoc();
+doc.add_root(row(inputs, forty_plot, width=800));
+doc.title = "Forty Yard Dash Plot";
