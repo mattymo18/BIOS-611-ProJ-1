@@ -1,11 +1,13 @@
 #Python Tool with bokeh plot
 
-import bokeh as bk;
-from bokeh.layouts import gridplot;
-from bokeh.plotting import figure;
-
 import pandas as pd;
 import numpy as np;
+
+import bokeh as bk;
+from bokeh.layouts import column, row;
+from bokeh.io import curdoc
+from bokeh.models import ColumnDataSource, Slider
+from bokeh.plotting import figure
 
 DF_Def_Skill =  pd.read_csv('derived_data/Def.Skill.csv');
 DF_Def_Stren =  pd.read_csv('derived_data/Def.Strength.csv');
@@ -33,69 +35,57 @@ DF_Mix_cle = DF_Mix[["playerId", "heightInches", "weight","combine40yd", "combin
 
 DF_Clean = DF_Def_Skill_cle.append([DF_Def_Stren_cle, DF_Off_Skill_cle, DF_Off_Stren_cle, DF_Mix_cle]);
 
-from bokeh.io import output_file, show
+
 TOOLS="pan,wheel_zoom,box_select,lasso_select,reset";
-source = bk.models.ColumnDataSource(data = DF_Clean);
+
+hist, edges = np.histogram(DF_Clean['combine40yd'], density=True, bins=bins)
+
+hist_df = pd.DataFrame({column: hist,
+                        "left": edges[:-1],
+                        "right": edges[1:]})
+
+hist_df["interval"] = ["%d to %d" % (left, right) for left, 
+                        right in zip(hist_df["left"], hist_df["right"])]
+src = ColumnDataSource(hist_df)
+
 
 #forty yard dash plot
-forty_plot = bk.plotting.figure(tools = TOOLS, 
+forty_plot = bk.figure(tools = TOOLS, 
                                 plot_width = 400, 
                                 plot_height = 400, 
                                 title = "Forty Yard Dash", 
                                 x_axis_label = "Forty Time", 
-                                y_axis_label = "Pick");
-forty_plot.scatter('combine40yd', 'pick', size = 5, color = "blue", alpha = 0.5, source = source);
+                                y_axis_label = "Count");
+forty_plot.quad(top=column, bottom = 0, left="left", right="right", source = src);
+
+#widgets
+bins = Slider(title = "Number of Bins", value = 50, start = 1, end = 100, step = 1)
+
+#set up callbacks
+def update_data(attrname, old, new):
+    
+    #Get current slider value
+    b = bins.value
+    
+    #generate new data
+    hist, edges = np.histogram(DF_Clean['combine40yd'], density = True, bins = b)
+    hist_df = pd.DataFrame({column: hist,
+                        "left": edges[:-1],
+                        "right": edges[1:]})
+    src.data = ColumnDataSource(hist_df)
+    
+for w in [bins]:
+    w.callback_policy = 'mouseup'
+    w.on_change('value', update_data)
 
 
-#benchpress plot
-bench_plot = bk.plotting.figure(tools = TOOLS, 
-                                plot_width = 400, 
-                                plot_height = 400, 
-                                title = "Bench Press", 
-                                x_axis_label = "Number of Reps", 
-                                y_axis_label = "Pick");
-bench_plot.scatter('combineBench', 'pick', size = 5, color = "red", alpha = 0.5, source = source);
+#set up layout and add to document
+inputs = column(bins)
 
-#Shuttle run plot
-shuttle_plot = bk.plotting.figure(tools = TOOLS, 
-                                plot_width = 400, 
-                                plot_height = 400, 
-                                title = "Shuttle Run", 
-                                x_axis_label = "Shuttle Time", 
-                                y_axis_label = "Pick");
-shuttle_plot.scatter('combineShuttle', 'pick', size = 5, color = "purple", alpha = 0.5, source = source);
+curdoc().add_root(row(inputs, forty_plot, width=800))
+curdoc().title = "Sliders"
 
-#vertical jump plot
-vertical_plot = bk.plotting.figure(tools = TOOLS, 
-                                plot_width = 400, 
-                                plot_height = 400, 
-                                title = "Vertical Jump", 
-                                x_axis_label = "Vertical Height", 
-                                y_axis_label = "Pick");
-vertical_plot.scatter('combineVert', 'pick', size = 5, color = "green", alpha = 0.5, source = source);
 
-#Broad jump plot
-broad_plot = bk.plotting.figure(tools = TOOLS, 
-                                plot_width = 400, 
-                                plot_height = 400, 
-                                title = "Broad Jump", 
-                                x_axis_label = "Jump Distance", 
-                                y_axis_label = "Pick");
-broad_plot.scatter('combineBroad', 'pick', size = 5, color = "orange", alpha = 0.5, source = source);
+#output_file(test.html);
 
-#3 cone plot
-threecone_plot = bk.plotting.figure(tools = TOOLS, 
-                                plot_width = 400, 
-                                plot_height = 400, 
-                                title = "3 Cone Drill", 
-                                x_axis_label = "3 Cone Time", 
-                                y_axis_label = "Pick");
-threecone_plot.scatter('combine3cone', 'pick', size = 5, color = "black", alpha = 0.5, source = source);
-
-#combined grid plot
-p = gridplot([forty_plot, bench_plot, shuttle_plot, vertical_plot, broad_plot, threecone_plot], 
-             ncols = 3, merge_tools = True);
-
-output_file(test.html);
-
-show(p);
+#show(forty_plot);

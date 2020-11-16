@@ -3,6 +3,8 @@ MAINTAINER Matt Johnson <Johnson.Matt1818@gmail.com>
 RUN apt update -y && apt install -y python3-pip
 RUN pip3 install jupyter jupyterlab
 RUN pip3 install numpy pandas sklearn plotnine matplotlib pandasql bokeh
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
+RUN jupyter labextension install @bokeh/jupyter_bokeh
 RUN R -e "install.packages('gridExtra')"
 RUN R -e "install.packages('class')"
 RUN R -e "install.packages('Rtsne')"
