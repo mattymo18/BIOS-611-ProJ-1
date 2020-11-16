@@ -31,9 +31,13 @@ If you want to run the shiny app on another port, replace 8788 above (in all pla
 #### Jupyter Notebook
 To run Jupyter Notebook use:
 
-    > docker run -p 8765:8765 -v `pwd`:/home/rstudio -e PASSWORD=mypass -it project-env sudo -H -u rstudio /bin/bash -c "cd ~/; jupyter lab --ip 0.0.0.0 --port 8765"
+    > docker run -p 8765:8765 -p 8718:8718 -v `pwd`:/home/rstudio -e PASSWORD=mypass -it project-env sudo -H -u rstudio /bin/bash -c "cd ~/; jupyter lab --ip 0.0.0.0 --port 8765"
     
 Then connect machine on port 8765.
+
+##### To Run NFL_Tool.py use:
+
+    > PORT=8718 make NFL_Python_Tool
 
 #### Make
 Use Makefile as recipe book for building artifacts found in derivded directories. 
