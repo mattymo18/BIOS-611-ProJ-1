@@ -33,7 +33,7 @@ DF_Mix_cle = DF_Mix[["playerId", "heightInches", "weight","combine40yd", "combin
 
 DF_Clean = DF_Def_Skill_cle.append([DF_Def_Stren_cle, DF_Off_Skill_cle, DF_Off_Stren_cle, DF_Mix_cle]);
 
-from bokeh.io import output_notebook, show
+from bokeh.io import output_file, show
 TOOLS="pan,wheel_zoom,box_select,lasso_select,reset";
 source = bk.models.ColumnDataSource(data = DF_Clean);
 
@@ -96,6 +96,6 @@ threecone_plot.scatter('combine3cone', 'pick', size = 5, color = "black", alpha 
 p = gridplot([forty_plot, bench_plot, shuttle_plot, vertical_plot, broad_plot, threecone_plot], 
              ncols = 3, merge_tools = True);
 
-output_notebook();
+output_file(test.html);
 
 show(p);
