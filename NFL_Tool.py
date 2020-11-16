@@ -38,9 +38,9 @@ DF_Clean = DF_Def_Skill_cle.append([DF_Def_Stren_cle, DF_Off_Skill_cle, DF_Off_S
 
 TOOLS="pan,wheel_zoom,box_select,lasso_select,reset";
 
-hist, edges = np.histogram(DF_Clean['combine40yd'], density=True, bins=bins);
+hist, edges = np.histogram(DF_Clean['combine40yd'], density=True);
 
-hist_df = pd.DataFrame({column: hist,
+hist_df = pd.DataFrame({"column": hist,
                         "left": edges[:-1],
                         "right": edges[1:]});
 
@@ -50,13 +50,13 @@ src = ColumnDataSource(hist_df);
 
 
 #forty yard dash plot
-forty_plot = bk.figure(tools = TOOLS, 
+forty_plot = bk.plotting.figure(tools = TOOLS, 
                                 plot_width = 400, 
                                 plot_height = 400, 
                                 title = "Forty Yard Dash", 
                                 x_axis_label = "Forty Time", 
                                 y_axis_label = "Count");
-forty_plot.quad(top=column, bottom = 0, left="left", right="right", source = src);
+forty_plot.quad(top="column", bottom = 0, left="left", right="right", source = src);
 
 #widgets
 bins = Slider(title = "Number of Bins", value = 50, start = 1, end = 100, step = 1);
@@ -69,12 +69,12 @@ def update_data(attrname, old, new):
     
     #generate new data
     hist, edges = np.histogram(DF_Clean['combine40yd'], density = True, bins = b)
-    hist_df = pd.DataFrame({column: hist,
+    hist_df = pd.DataFrame({"column": hist,
                         "left": edges[:-1],
                         "right": edges[1:]})
     src.data = ColumnDataSource(hist_df);
     
-bins.callback_policy = 'mouseup'
+#bins.callback_policy = 'mouseup'
 bins.on_change('value', update_data);
 
 
