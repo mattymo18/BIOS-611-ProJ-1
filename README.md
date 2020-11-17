@@ -44,7 +44,7 @@ Then connect machine on port 8718.
 If you want to run the shiny app on another port, replace 8788 above (in all places) with the appropriate port.
 
 #### Make
-Use Makefile as recipe book for building artifacts found in derivded directories. 
+Use Makefile as recipe book for building artifacts found in deriveded directories. 
 
 ##### Example:
 In local project directory, to build artifact named Raleigh.Clean.csv:
