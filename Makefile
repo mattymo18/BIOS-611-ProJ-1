@@ -17,7 +17,7 @@ NFL_Python_Tool:\
  derived_data/Def.Skill.csv\
  derived_data/Def.Strength.csv\
  derived_data/DF.Mix.csv
-	bokeh serve --port ${PORT} --address 0.0.0.0 NFL_Tool.py
+	bokeh serve --port ${PORT} --allow-websocket-origin=0.0.0.0:8718 --address 0.0.0.0 NFL_Tool.py
 
 NFL_Combine_Tool:\
  derived_data/Off.Skill.csv\

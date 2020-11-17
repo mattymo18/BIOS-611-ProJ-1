@@ -65,6 +65,7 @@ bins = Slider(title = "Number of Bins", value = 50, start = 1, end = 100, step =
 def update_data(attrname, old, new):
     
     #Get current slider value
+    print("{} {} {}".format(attrname, old, new))
     b = bins.value
     
     #generate new data
@@ -72,10 +73,10 @@ def update_data(attrname, old, new):
     hist_df = pd.DataFrame({"column": hist,
                         "left": edges[:-1],
                         "right": edges[1:]})
-    src.data = ColumnDataSource(hist_df);
+    src.data = hist_df;
     
 #bins.callback_policy = 'mouseup'
-bins.on_change('value', update_data);
+bins.on_change('value_throttled', update_data);
 
 
 #set up layout and add to document
